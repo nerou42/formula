@@ -5,6 +5,7 @@ use PHPUnit\Framework\TestCase;
 use TimoLehnertz\formula\expression\ArgumentListExpression;
 use TimoLehnertz\formula\expression\OperatorExpression;
 use TimoLehnertz\formula\Formula;
+use TimoLehnertz\formula\FormulaValidationException;
 use TimoLehnertz\formula\procedure\DefaultScope;
 use TimoLehnertz\formula\procedure\Scope;
 
@@ -41,6 +42,18 @@ class FormulaIntegrationTest extends TestCase {
     $this->assertFalse($formula->calculate()->toPHPValue());
     $formula = new Formula('TestEnum.A == TestEnum.A', $scope);
     $this->assertTrue($formula->calculate()->toPHPValue());
+  }
+
+  public function funcWithNoArgs(): int {
+    return 1;
+  }
+
+  public function testTooManyArguments(): void {
+    $scope = new Scope();
+    $scope->definePHP(true, 'funcWithNoArgs', $this->funcWithNoArgs(...));
+    $this->expectException(FormulaValidationException::class);
+    $this->expectExceptionMessage('Too many arguments provided');
+    new Formula('funcWithNoArgs(1)', $scope);
   }
 }
 

@@ -75,8 +75,10 @@ class OuterFunctionArgumentListType extends Type {
   public function getArgumentType(int $index): ?Type {
     if (isset($this->arguments[$index])) {
       return $this->arguments[$index]->type;
-    } else if ($this->isVArgs) {
+    } else if ($this->isVArgs && count($this->arguments) > 0) {
       return $this->arguments[count($this->arguments) - 1]->type;
+    } else {
+      return null;
     }
   }
 

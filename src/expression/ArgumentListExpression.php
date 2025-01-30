@@ -1,8 +1,11 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace TimoLehnertz\formula\expression;
 
 use TimoLehnertz\formula\FormulaBugException;
+use TimoLehnertz\formula\FormulaValidationException;
 use TimoLehnertz\formula\PrettyPrintOptions;
 use TimoLehnertz\formula\nodes\Node;
 use TimoLehnertz\formula\procedure\Scope;
@@ -27,11 +30,14 @@ class ArgumentListExpression implements Expression, CastableExpression {
   }
 
   public function getCastedExpression(Type $type, Scope $scope): ArgumentListExpression {
-    if(!($type instanceof OuterFunctionArgumentListType)) {
-      throw new FormulaBugException('ArgumentListExpression can only be casted to OuterFunctionArgumentListType! Got '.$type::class);
+    if (!($type instanceof OuterFunctionArgumentListType)) {
+      throw new FormulaBugException('ArgumentListExpression can only be casted to OuterFunctionArgumentListType! Got ' . $type::class);
     }
     $newExpressions = [];
-    for($i = 0;$i < count($this->expressions);$i++) {
+    if(count($this->expressions) > $type->getMaxArgumentCount()) {
+      throw new FormulaValidationException('Too many arguments provided');
+    }
+    for ($i = 0; $i < count($this->expressions); $i++) {
       $targetType = $type->getArgumentType($i);
       $actualType = $this->expressions[$i]->validate($scope);
       $expression = OperatorExpression::castExpression($this->expressions[$i], $actualType, $targetType, $scope, $this->expressions[$i]);
@@ -44,7 +50,7 @@ class ArgumentListExpression implements Expression, CastableExpression {
 
   public function validate(Scope $scope): Type {
     $arguments = [];
-    foreach($this->expressions as $expression) {
+    foreach ($this->expressions as $expression) {
       $arguments[] = new OuterFunctionArgument($expression->validate($scope), false, false);
     }
     return new OuterFunctionArgumentListType($arguments, false);
@@ -52,7 +58,7 @@ class ArgumentListExpression implements Expression, CastableExpression {
 
   public function run(Scope $scope): Value {
     $values = [];
-    foreach($this->expressions as $expression) {
+    foreach ($this->expressions as $expression) {
       $values[] = $expression->run($scope);
     }
     return new OuterFunctionArgumentListValue($values);
@@ -61,16 +67,16 @@ class ArgumentListExpression implements Expression, CastableExpression {
   public function toString(PrettyPrintOptions $prettyPrintOptions): string {
     $string = '';
     $delim = '';
-    foreach($this->expressions as $expression) {
-      $string .= $delim.$expression->toString($prettyPrintOptions);
+    foreach ($this->expressions as $expression) {
+      $string .= $delim . $expression->toString($prettyPrintOptions);
       $delim = ',';
     }
-    return '('.$string.')';
+    return '(' . $string . ')';
   }
 
   public function buildNode(Scope $scope): Node {
     $inputs = [];
-    foreach($this->expressions as $expression) {
+    foreach ($this->expressions as $expression) {
       $inputs[] = $expression->buildNode($scope);
     }
     return new Node('ArgumentListExpression', $inputs);
