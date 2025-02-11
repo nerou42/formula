@@ -147,11 +147,11 @@ class DefaultScope extends Scope {
     return sqrt($arg);
   }
 
-  public static function ceilFunc(float $value): float {
+  public static function ceilFunc(int|float $value): float {
     return ceil($value);
   }
 
-  public static function floorFunc(float $value): float {
+  public static function floorFunc(int|float $value): float {
     return floor($value);
   }
 
@@ -159,23 +159,23 @@ class DefaultScope extends Scope {
     return round($num, $precision);
   }
 
-  public static function sinFunc(float $arg): float {
+  public static function sinFunc(int|float $arg): float {
     return sin($arg);
   }
 
-  public static function cosFunc(float $arg): float {
+  public static function cosFunc(int|float $arg): float {
     return cos($arg);
   }
 
-  public static function tanFunc(float $arg): float {
+  public static function tanFunc(int|float $arg): float {
     return tan($arg);
   }
 
-  public static function is_nanFunc(float $val): bool {
+  public static function is_nanFunc(int|float $val): bool {
     return is_nan($val);
   }
 
-  public static function absFunc(float $number): float {
+  public static function absFunc(int|float $number): float {
     return abs($number);
   }
 
@@ -187,7 +187,7 @@ class DefaultScope extends Scope {
     return count(DefaultScope::mergeArraysRecursive($values));
   }
 
-  public static function inRangeFunc(float $value, float $min, float $max): bool {
+  public static function inRangeFunc(float|int $value, float|int $min, float|int $max): bool {
     return ($min <= $value) && ($value <= $max);
   }
 
@@ -213,7 +213,7 @@ class DefaultScope extends Scope {
     return end($array);
   }
 
-  public static function sumFunc(float|array ...$values): float {
+  public static function sumFunc(float|int|array ...$values): float {
     $arr = DefaultScope::mergeArraysRecursive($values);
     $res = 0;
     foreach ($arr as $value) {
@@ -225,7 +225,7 @@ class DefaultScope extends Scope {
     return $res;
   }
 
-  public static function avgFunc(float|array ...$values): float {
+  public static function avgFunc(float|int|array ...$values): float {
     $sum = self::sumFunc($values);
     return $sum / self::sizeofFunc($values);
   }
