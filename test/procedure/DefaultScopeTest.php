@@ -15,6 +15,7 @@ use TimoLehnertz\formula\type\CompoundType;
 use TimoLehnertz\formula\type\NullType;
 use TimoLehnertz\formula\type\NeverType;
 use TimoLehnertz\formula\ExitIfNullException;
+use TimoLehnertz\formula\FormulaValidationException;
 use TimoLehnertz\formula\procedure\DefaultScope;
 
 class DefaultScopeTest extends TestCase {
@@ -65,6 +66,11 @@ class DefaultScopeTest extends TestCase {
     // @formatter:on
   }
 
+  public function testSumInvalidArrayArg(): void {
+    $this->expectException(FormulaValidationException::class);
+    new Formula('sum({"abc"})', new DefaultScope());
+  }
+
   /**
    * @dataProvider functionProvider
    */
@@ -73,10 +79,6 @@ class DefaultScopeTest extends TestCase {
     if($expectedOutput !== null) {
       $this->expectOutputString($expectedOutput);
     }
-    // if(!$expectedReturnType->assignableBy($formula->getReturnType())) {
-    //   var_dump($formula->getReturnType());
-    //   var_dump($source);
-    // }
     $this->assertTrue($expectedReturnType->equals($formula->getReturnType()));
     $result = $formula->calculate();
     if(($expectedReturnType instanceof VoidType)) {

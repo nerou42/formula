@@ -26,11 +26,13 @@ use TimoLehnertz\formula\type\IntegerType;
 class DefaultScope extends Scope {
 
   public function __construct() {
+    $intOrFloat = CompoundType::buildFromTypes([new FloatType(), new IntegerType()]);
+    $numberVargType = new OuterFunctionArgumentListType([new OuterFunctionArgument(CompoundType::buildFromTypes([new FloatType(), new IntegerType(), new ArrayType(new MixedType(), $intOrFloat)]), true, true)], true);
     $this->definePHP(true, 'print', [DefaultScope::class, 'printFunc']);
     $this->definePHP(true, 'println', [DefaultScope::class, 'printlnFunc']);
     $this->definePHP(true, 'pow', [DefaultScope::class, 'powFunc']);
-    $this->definePHP(true, "min", [DefaultScope::class, "minFunc"]);
-    $this->definePHP(true, "max", [DefaultScope::class, "maxFunc"]);
+    $this->definePHP(true, "min", [DefaultScope::class, "minFunc"], $numberVargType);
+    $this->definePHP(true, "max", [DefaultScope::class, "maxFunc"], $numberVargType);
     $this->definePHP(true, "sqrt", [DefaultScope::class, "sqrtFunc"]);
     $this->definePHP(true, "ceil", [DefaultScope::class, "ceilFunc"]);
     $this->definePHP(true, "floor", [DefaultScope::class, "floorFunc"]);
@@ -67,9 +69,9 @@ class DefaultScope extends Scope {
     $this->definePHP(true, "assertTrue", [DefaultScope::class, "assertTrueFunc"]);
     $this->definePHP(true, "assertFalse", [DefaultScope::class, "assertFalseFunc"]);
     $this->definePHP(true, "assertEquals", [DefaultScope::class, "assertEqualsFunc"]);
-    $intOrFloat = CompoundType::buildFromTypes([new FloatType(), new IntegerType()]);
-    $this->definePHP(true, "sum", [DefaultScope::class, "sumFunc"], new OuterFunctionArgumentListType([new OuterFunctionArgument(CompoundType::buildFromTypes([$intOrFloat, new ArrayType(new MixedType(), $intOrFloat)]), true, true, 'values')], true));
-    $this->definePHP(true, "avg", [DefaultScope::class, "avgFunc"], new OuterFunctionArgumentListType([new OuterFunctionArgument(CompoundType::buildFromTypes([$intOrFloat, new ArrayType(new MixedType(), $intOrFloat)]), true, true, 'values')], true));
+    
+    $this->definePHP(true, "sum", [DefaultScope::class, "sumFunc"], $numberVargType);
+    $this->definePHP(true, "avg", [DefaultScope::class, "avgFunc"], $numberVargType);
     $callbackType = new FunctionType(new OuterFunctionArgumentListType([new OuterFunctionArgument(new MixedType())]), new BooleanType());
     $this->definePHP(true, "array_filter", [DefaultScope::class, "array_filterFunc"], ['callback' => $callbackType], null, new SpecificReturnType('FORMULA_ARRAY_FILTER', function (OuterFunctionArgumentListType $args): ?Type {
       return $args->getArgumentType(0);
@@ -123,7 +125,7 @@ class DefaultScope extends Scope {
 
   public static function minFunc(float|array ...$values): float {
     $values = DefaultScope::mergeArraysRecursive($values);
-    if(count($values) === 0) {
+    if (count($values) === 0) {
       return 0;
     }
     return min($values);
@@ -131,7 +133,7 @@ class DefaultScope extends Scope {
 
   public static function maxFunc(float|array ...$values): float {
     $values = DefaultScope::mergeArraysRecursive($values);
-    if(count($values) === 0) {
+    if (count($values) === 0) {
       return 0;
     }
     return max($values);
@@ -229,19 +231,19 @@ class DefaultScope extends Scope {
   }
 
   public static function assertTrueFunc(bool $condition) {
-    if($condition === false) {
+    if ($condition === false) {
       throw new FormulaRuntimeException('failed asserting that false is true');
     }
   }
 
   public static function assertEqualsFunc($expected, $actual, string $message = '') {
-    if($expected != $actual) {
-      throw new FormulaRuntimeException('failed asserting that '.var_export($actual, true).' equals '.var_export($expected, true).' '.$message);
+    if ($expected != $actual) {
+      throw new FormulaRuntimeException('failed asserting that ' . var_export($actual, true) . ' equals ' . var_export($expected, true) . ' ' . $message);
     }
   }
 
   public static function assertFalseFunc(bool $condition, string $message = '') {
-    if($condition === true) {
+    if ($condition === true) {
       throw new FormulaRuntimeException('failed asserting that true is false');
     }
   }
