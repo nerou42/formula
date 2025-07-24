@@ -8,7 +8,6 @@ use TimoLehnertz\formula\tokens\TokenisationException;
 
 class TokenizerTest extends TestCase {
 
-  // @formatter:off
   public static function provideTokens(): array {
     return [
       [Token::KEYWORD_INT, 'int ', 'int'],
@@ -35,6 +34,10 @@ class TokenizerTest extends TestCase {
       [Token::LOGICAL_AND, '&&', '&&'],
       [Token::LOGICAL_OR, '||', '||'],
       [Token::LOGICAL_XOR, '^', '^'],
+      [Token::BITWISE_AND, '&', '&'],
+      [Token::BITWISE_OR, '|', '|'],
+      [Token::LEFT_SHIFT, '<<', '<<'],
+      [Token::RIGHT_SHIFT, '>>', '>>'],
       [Token::EXCLAMATION_MARK, '!', '!'],
       [Token::COMPARISON_EQUALS, '==', '=='],
       [Token::COMPARISON_NOT_EQUALS, '!=', '!='],
@@ -70,7 +73,6 @@ class TokenizerTest extends TestCase {
       [Token::COMMA, ',', ','],
       [Token::SEMICOLON, ';', ';'],
       [Token::SCOPE_RESOLUTION, '::', '::'],
-      [Token::INTL_BACKSLASH, '|', '|'],
       [Token::SPREAD, '...', '...'],
       [Token::DOT, '.', '.'],
       [Token::STRING_CONSTANT, '"ABC123!"', 'ABC123!'],
@@ -98,9 +100,9 @@ class TokenizerTest extends TestCase {
       [Token::DATE_INTERVAL, '"PT45S"', 'PT45S'],
       [Token::DATE_INTERVAL, '"P0D"', 'P0D'],
       [Token::KEYWORD_MIXED, 'mixed', 'mixed'],
+      [Token::INT_CONSTANT, '0b11', '3'],
     ];
   }
-  // @formatter:on
 
   /**
    * @dataProvider provideTokens

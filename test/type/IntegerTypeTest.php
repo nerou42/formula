@@ -14,4 +14,11 @@ class IntegerTypeTest extends TestCase {
     $this->expectExceptionMessage('Division by zero');
     $formula->calculate();
   }
+
+  public function testGetNthBit(): void {
+    $formula = new Formula('(0b01010101 & (0b00000001 << 6)) != 0');
+    $this->assertEquals(true, $formula->calculate()->toPHPValue());
+    $formula = new Formula('(0b01010101 & (0b00000001 << 7)) != 0');
+    $this->assertEquals(false, $formula->calculate()->toPHPValue());
+  }
 }

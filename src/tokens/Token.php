@@ -1,9 +1,8 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 namespace TimoLehnertz\formula\tokens;
 
 use TimoLehnertz\formula\parsing\ParsingException;
-use const false;
 
 /**
  * @author Timo Lehnertz
@@ -31,7 +30,7 @@ class Token {
     $this->position = $position;
     $this->prev = $prev;
     $this->source = $source;
-    if($prev !== null) {
+    if ($prev !== null) {
       $prev->next = $this;
     }
   }
@@ -41,10 +40,10 @@ class Token {
   }
 
   public function prev(bool $includeComments = false): ?Token {
-    if($includeComments) {
+    if ($includeComments) {
       return $this->prev;
-    } else if($this->prev !== null) {
-      if($this->prev->id === static::LINE_COMMENT || $this->prev->id === static::MULTI_LINE_COMMENT) {
+    } else if ($this->prev !== null) {
+      if ($this->prev->id === static::LINE_COMMENT || $this->prev->id === static::MULTI_LINE_COMMENT) {
         return $this->prev->prev($includeComments);
       } else {
         return $this->prev;
@@ -58,7 +57,7 @@ class Token {
   }
 
   public function skipComment(): ?Token {
-    if($this->id !== static::LINE_COMMENT && $this->id !== static::MULTI_LINE_COMMENT) {
+    if ($this->id !== static::LINE_COMMENT && $this->id !== static::MULTI_LINE_COMMENT) {
       return $this;
     } else {
       return $this->next();
@@ -66,10 +65,10 @@ class Token {
   }
 
   public function next(bool $includeComments = false): ?Token {
-    if($includeComments) {
+    if ($includeComments) {
       return $this->next;
-    } else if($this->next !== null) {
-      if($this->next->id === static::LINE_COMMENT || $this->next->id === static::MULTI_LINE_COMMENT) {
+    } else if ($this->next !== null) {
+      if ($this->next->id === static::LINE_COMMENT || $this->next->id === static::MULTI_LINE_COMMENT) {
         return $this->next->next($includeComments);
       } else {
         return $this->next;
@@ -80,7 +79,7 @@ class Token {
 
   public function requireNext(bool $includeComments = false): Token {
     $next = $this->next($includeComments);
-    if($next === null) {
+    if ($next === null) {
       throw new ParsingException(ParsingException::ERROR_UNEXPECTED_END_OF_INPUT, $this);
     } else {
       return $next;
@@ -89,14 +88,13 @@ class Token {
 
   public function last(bool $includeComments = false): Token {
     $next = $this->next($includeComments);
-    if($next === null) {
+    if ($next === null) {
       return $this;
     } else {
       return $next->last($includeComments);
     }
   }
 
-  // @formatter:off
   public const KEYWORD_INT = 0;
   public const KEYWORD_FLOAT = 1;
   public const KEYWORD_STRING = 2;
@@ -154,7 +152,6 @@ class Token {
   public const COMMA = 55;
   public const SEMICOLON = 56;
   public const SCOPE_RESOLUTION = 57;
-  public const INTL_BACKSLASH = 58; // |
   public const SPREAD = 59;
   public const DOT = 60;
   public const STRING_CONSTANT = 61;
@@ -172,5 +169,8 @@ class Token {
   public const FUNCTION_ARROW = 73; // ->
   public const KEYWORD_FUNCTION = 74;
   public const KEYWORD_MIXED = 75;
-  // @formatter:on
+  public const BITWISE_AND = 76;
+  public const BITWISE_OR = 77;
+  public const LEFT_SHIFT = 78;
+  public const RIGHT_SHIFT = 79;
 }

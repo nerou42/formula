@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 namespace TimoLehnertz\formula\type\classes;
 
 use TimoLehnertz\formula\FormulaBugException;

@@ -5,12 +5,10 @@ use PHPUnit\Framework\TestCase;
 use TimoLehnertz\formula\Formula;
 use TimoLehnertz\formula\procedure\Scope;
 use TimoLehnertz\formula\type\DateIntervalType;
-use const true;
 
 class DateIntervalTest extends TestCase {
 
   public function formatProvider(): array {
-    // @formatter:off
     return [
       ["P0Y"],
       ["P1M"],
@@ -33,7 +31,6 @@ class DateIntervalTest extends TestCase {
       ["P0Y1M2D"],
       ["P0Y"],
     ];
-    // @formatter:on
   }
 
   /**

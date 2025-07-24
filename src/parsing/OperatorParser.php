@@ -1,8 +1,7 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 namespace TimoLehnertz\formula\parsing;
 
-use Exception;
 use TimoLehnertz\formula\operator\ChainedAssignmentOperator;
 use TimoLehnertz\formula\operator\DecrementPostfixOperator;
 use TimoLehnertz\formula\operator\DecrementPrefixOperator;
@@ -21,7 +20,6 @@ use TimoLehnertz\formula\tokens\Token;
  */
 class OperatorParser extends Parser {
 
-  // @formatter:off
   private static array $inFrontOfUnary = [ // and type cast
     Token::PLUS => true,
     Token::MINUS => true,
@@ -35,7 +33,6 @@ class OperatorParser extends Parser {
     Token::SQUARE_BRACKETS_OPEN => true,
     Token::QUESTIONMARK => true,
     Token::COlON => true,
-    Token::INTL_BACKSLASH => true,
     Token::SEMICOLON => true,
     Token::COMPARISON_EQUALS => true,
     Token::COMPARISON_GREATER => true,
@@ -55,9 +52,12 @@ class OperatorParser extends Parser {
     Token::LOGICAL_AND => true,
     Token::LOGICAL_OR => true,
     Token::KEYWORD_RETURN => true,
+    Token::BITWISE_AND => true,
+    Token::BITWISE_OR => true,
+    Token::LEFT_SHIFT => true,
+    Token::RIGHT_SHIFT => true,
   ];
 
-  // @formatter:on
   public function __construct() {
     parent::__construct('operator');
   }
@@ -66,15 +66,15 @@ class OperatorParser extends Parser {
    * Operator Precedence reference: https://en.cppreference.com/w/cpp/language/operator_precedence
    */
   protected function parsePart(Token $firstToken): ParserReturn {
-    switch($firstToken->id) {
+    switch ($firstToken->id) {
       case Token::SCOPE_RESOLUTION:
         return new ParserReturn(new ImplementableParsedOperator(ImplementableOperator::TYPE_SCOPE_RESOLUTION, '::', OperatorType::InfixOperator, 1), $firstToken->next());
       case Token::BRACKETS_OPEN:
         $tokenBefore = $firstToken->prev();
-        if($tokenBefore?->id === Token::BRACKETS_CLOSED) {
+        if ($tokenBefore?->id === Token::BRACKETS_CLOSED) {
           return (new CallOperatorParser())->parse($firstToken);
         }
-        if($tokenBefore === null || isset(static::$inFrontOfUnary[$tokenBefore->id])) {
+        if ($tokenBefore === null || isset(static::$inFrontOfUnary[$tokenBefore->id])) {
           return (new TypeCastOperatorParser())->parse($firstToken);
         } else {
           return (new CallOperatorParser())->parse($firstToken);
@@ -90,7 +90,7 @@ class OperatorParser extends Parser {
          * It doesn't work the other way around as a()++ could also be a legal postfix
          */
         $isPrefix = $firstToken->hasNext() && $firstToken->next()->id === Token::IDENTIFIER;
-        if($firstToken->id === Token::INCREMENT) {
+        if ($firstToken->id === Token::INCREMENT) {
           return new ParserReturn($isPrefix ? new IncrementPrefixOperator() : new IncrementPostfixOperator(), $firstToken->next());
         } else {
           return new ParserReturn($isPrefix ? new DecrementPrefixOperator() : new DecrementPostfixOperator(), $firstToken->next());
@@ -98,7 +98,7 @@ class OperatorParser extends Parser {
       case Token::PLUS:
       case Token::MINUS:
         $tokenBefore = $firstToken->prev();
-        if($tokenBefore === null || isset(static::$inFrontOfUnary[$tokenBefore->id])) {
+        if ($tokenBefore === null || isset(static::$inFrontOfUnary[$tokenBefore->id])) {
           $implementableID = $firstToken->id === Token::PLUS ? ImplementableOperator::TYPE_UNARY_PLUS : ImplementableOperator::TYPE_UNARY_MINUS;
           $identifier = $firstToken->id === Token::PLUS ? '+' : '-';
           return new ParserReturn(new ImplementableParsedOperator($implementableID, $identifier, OperatorType::PrefixOperator, 3), $firstToken->next());
@@ -153,6 +153,14 @@ class OperatorParser extends Parser {
         return new ParserReturn(new ImplementableParsedOperator(ImplementableOperator::TYPE_INSTANCEOF, 'instanceof', OperatorType::InfixOperator, 3), $firstToken->next());
       case Token::KEYWORD_NEW:
         return new ParserReturn(new ImplementableParsedOperator(ImplementableOperator::TYPE_NEW, 'new', OperatorType::PrefixOperator, 2), $firstToken->next());
+      case Token::BITWISE_AND:
+        return new ParserReturn(new ImplementableParsedOperator(ImplementableOperator::TYPE_BITWISE_AND, '&', OperatorType::InfixOperator, 11), $firstToken->next());
+      case Token::BITWISE_OR:
+        return new ParserReturn(new ImplementableParsedOperator(ImplementableOperator::TYPE_BITWISE_OR, '|', OperatorType::InfixOperator, 13), $firstToken->next());
+      case Token::LEFT_SHIFT:
+        return new ParserReturn(new ImplementableParsedOperator(ImplementableOperator::TYPE_LEFT_SHIFT, '<<', OperatorType::InfixOperator, 7), $firstToken->next());
+      case Token::RIGHT_SHIFT:
+        return new ParserReturn(new ImplementableParsedOperator(ImplementableOperator::TYPE_RIGHT_SHIFT, '>>', OperatorType::InfixOperator, 7), $firstToken->next());
       default:
         throw new ParsingSkippedException();
     }

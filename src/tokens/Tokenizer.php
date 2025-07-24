@@ -60,7 +60,7 @@ class Tokenizer {
         $position = 0;
       }
       switch ($mode) {
-          // skip white spaces
+        // skip white spaces
         case 'normal':
           if (strlen($buffer) === 0 && ctype_space($char)) {
             break;
@@ -209,6 +209,11 @@ class Tokenizer {
           $buffer .= $char;
           break;
         case 'number':
+          if($buffer === '0' && $char === 'b') {
+            $buffer .= $char;
+            $mode = 'bin_number';
+            break;
+          }
           if ($char === '.') {
             if ($numberHasDot) {
               throw new TokenisationException('Number cant have two dots', $tokenStartLine, $lastStartPosition);
@@ -226,6 +231,20 @@ class Tokenizer {
           }
           $buffer .= $char;
           break;
+        case 'bin_number':
+          if (ctype_digit($char)) {
+            $buffer .= $char;
+          } else if(strlen($buffer) > 2) {
+            // Remove the "0b" prefix
+            $binary = ltrim($buffer, '0b');
+            $lastToken = new Token(Token::INT_CONSTANT, intval($binary, 2) . '', $tokenStartLine, $lastStartPosition, $tokenSource, $lastToken);
+            $i--;
+            $position--;
+            $addedToken();
+          } else {
+            throw new TokenisationException('Incomplete binary number', $tokenStartLine, $lastStartPosition);
+          }
+          break;
       }
     }
     if ($mode !== 'normal') {
@@ -242,7 +261,6 @@ class Tokenizer {
 
   private const MULTI_LINE_COMMENT_END = "*/";
 
-  // @formatter:off
   private const INSTANT_TOKENS = [
     "??" => Token::NULLISH,
     "&&" => Token::LOGICAL_AND,
@@ -274,7 +292,10 @@ class Tokenizer {
     ";" => Token::SEMICOLON,
     "::" => Token::SCOPE_RESOLUTION,
     "..." => Token::SPREAD,
-    "->" => Token::FUNCTION_ARROW
+    "->" => Token::FUNCTION_ARROW,
+
+    "<<" => Token::LEFT_SHIFT,
+    ">>" => Token::RIGHT_SHIFT,
   ];
 
   private const KEYWORD_TOKENS = [
@@ -307,6 +328,20 @@ class Tokenizer {
   ];
 
   private
-  const SINGLE_TOKENS = ["+" => Token::PLUS, "-" => Token::MINUS, "*" => Token::MULTIPLY, "/" => Token::DIVIDE, "|" => Token::INTL_BACKSLASH, "?" => Token::QUESTIONMARK, "." => Token::DOT, "=" => Token::ASSIGNMENT, ":" => Token::COlON, "^" => Token::LOGICAL_XOR, "<" => Token::COMPARISON_SMALLER, ">" => Token::COMPARISON_GREATER, "!" => Token::EXCLAMATION_MARK];
-  // @formatter:on
+  const SINGLE_TOKENS = [
+    "+" => Token::PLUS,
+    "-" => Token::MINUS,
+    "*" => Token::MULTIPLY,
+    "/" => Token::DIVIDE,
+    "?" => Token::QUESTIONMARK,
+    "." => Token::DOT,
+    "=" => Token::ASSIGNMENT,
+    ":" => Token::COlON,
+    "^" => Token::LOGICAL_XOR,
+    "<" => Token::COMPARISON_SMALLER,
+    ">" => Token::COMPARISON_GREATER,
+    "!" => Token::EXCLAMATION_MARK,
+    "&" => Token::BITWISE_AND,
+    "|" => Token::BITWISE_OR
+  ];
 }

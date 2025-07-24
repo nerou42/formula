@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 namespace TimoLehnertz\formula\operator;
 
 use TimoLehnertz\formula\FormulaException;
@@ -9,9 +7,8 @@ use TimoLehnertz\formula\FormulaPart;
 use TimoLehnertz\formula\PrettyPrintOptions;
 
 /**
+ * Represents an operators that can be implemented by values
  * @author Timo Lehnertz
- *
- *         Represents an operators that can be implemented by values
  */
 class ImplementableOperator implements FormulaPart {
 
@@ -38,6 +35,10 @@ class ImplementableOperator implements FormulaPart {
   public const TYPE_ARRAY_ACCESS = 20;
   public const TYPE_CALL = 21;
   public const TYPE_TYPE_CAST = 22;
+  public const TYPE_BITWISE_AND = 23;
+  public const TYPE_BITWISE_OR = 24;
+  public const TYPE_LEFT_SHIFT = 25;
+  public const TYPE_RIGHT_SHIFT = 26;
   public const MAX_ID = self::TYPE_TYPE_CAST;
 
   /**
@@ -79,6 +80,10 @@ class ImplementableOperator implements FormulaPart {
       case ImplementableOperator::TYPE_CALL:
       case ImplementableOperator::TYPE_TYPE_CAST:
       case ImplementableOperator::TYPE_ARRAY_ACCESS:
+      case ImplementableOperator::TYPE_BITWISE_AND:
+      case ImplementableOperator::TYPE_BITWISE_OR:
+      case ImplementableOperator::TYPE_LEFT_SHIFT:
+      case ImplementableOperator::TYPE_RIGHT_SHIFT:
         return OperatorType::InfixOperator;
       case ImplementableOperator::TYPE_NEW:
       case ImplementableOperator::TYPE_UNARY_PLUS:
@@ -138,6 +143,14 @@ class ImplementableOperator implements FormulaPart {
         return '[]';
       case ImplementableOperator::TYPE_CALL:
         return '()';
+      case ImplementableOperator::TYPE_BITWISE_AND:
+        return '&';
+      case ImplementableOperator::TYPE_BITWISE_OR:
+        return '|';
+      case ImplementableOperator::TYPE_LEFT_SHIFT:
+        return '<<';
+      case ImplementableOperator::TYPE_RIGHT_SHIFT:
+        return '>>';
       default:
         throw new FormulaException('Invalid ImplementableOperator ID ' . $id);
     }
@@ -163,9 +176,9 @@ class ImplementableOperator implements FormulaPart {
       case OperatorType::InfixOperator:
         $operatorType = 'infix';
         break;
-      // case OperatorType::PostfixOperator:
-      //   $operatorType = 'postfix';
-      //   break;
+        // case OperatorType::PostfixOperator:
+        //   $operatorType = 'postfix';
+        //   break;
     }
     return ['operatorType' => $operatorType, 'id' => $this->id, 'identifier' => $this->identifier];
   }

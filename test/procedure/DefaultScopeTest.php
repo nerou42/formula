@@ -21,7 +21,6 @@ use TimoLehnertz\formula\procedure\DefaultScope;
 class DefaultScopeTest extends TestCase {
 
   public function functionProvider(): array {
-    // @formatter:off
     return [
       ["print('Hello world!')", new VoidType(), null, 'Hello world!'],
       ["println('Hello world!')", new VoidType(), null, 'Hello world!'.PHP_EOL],
@@ -63,7 +62,6 @@ class DefaultScopeTest extends TestCase {
 
       ["PI", new FloatType(), M_PI, null],
     ];
-    // @formatter:on
   }
 
   public function testSumInvalidArrayArg(): void {

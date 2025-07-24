@@ -39,7 +39,6 @@ class DateTimeImmutableTest extends TestCase {
   }
 
   public function formatProvider(): array {
-    // @formatter:off
     return [
       ["2008-09-15T15:53:00"],
       ["2008-09-15"],
@@ -52,7 +51,6 @@ class DateTimeImmutableTest extends TestCase {
       ["2008-09"],
       ["1988-05-26T23:00:00.000Z"],
     ];
-    // @formatter:on
   }
 
   /**

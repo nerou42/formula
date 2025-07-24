@@ -4,7 +4,6 @@ namespace TimoLehnertz\formula\parsing;
 
 use TimoLehnertz\formula\tokens\Token;
 use TimoLehnertz\formula\type\functions\OuterFunctionArgument;
-use const false;
 
 /**
  * @author Timo Lehnertz

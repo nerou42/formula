@@ -11,7 +11,6 @@ use TimoLehnertz\formula\tokens\Tokenizer;
 class OperatorParserTest extends TestCase {
 
   public function provideOperators(): array {
-    // @formatter:off
     $dataset = [
       ["a::b", '::', 1, OperatorType::InfixOperator],
       ['(int[]|boolean)', '(int[]|boolean)', 0, OperatorType::PrefixOperator],
@@ -51,7 +50,6 @@ class OperatorParserTest extends TestCase {
       ['a^=b', '^=', 1, OperatorType::InfixOperator],
       ['a instanceof b', 'instanceof', 1, OperatorType::InfixOperator],
     ];
-  // @formatter:on
     return $dataset;
   }
 

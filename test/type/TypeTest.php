@@ -159,7 +159,19 @@ class TypeTest extends TestCase {
     $compatibleOperands = [];
     $compatibleOperands[] = new CompatibleOperator(null, new IntegerType(), null, new IntegerValue(-42));
     $operators[] = new OperatorTestMeta(ImplementableOperator::TYPE_UNARY_MINUS, $compatibleOperands);
-    $tests[] = [42, new IntegerType(), new IntegerType(), new FloatType(), new IntegerType(), new FloatType(), 'int', $operators, new IntegerValue(42), '42', true, new IntegerValue(42), new IntegerValue(1), true];
+    // Operator &
+    $compatibleOperands = [new CompatibleOperator(new IntegerType(), new IntegerType(), new IntegerValue(0b00011111), new IntegerValue(0b00001010))];
+    $operators[] = new OperatorTestMeta(ImplementableOperator::TYPE_BITWISE_AND, $compatibleOperands);
+    // Operator |
+    $compatibleOperands = [new CompatibleOperator(new IntegerType(), new IntegerType(), new IntegerValue(0b000001), new IntegerValue(0b101011))];
+    $operators[] = new OperatorTestMeta(ImplementableOperator::TYPE_BITWISE_OR, $compatibleOperands);
+    // Operator <<
+    $compatibleOperands = [new CompatibleOperator(new IntegerType(), new IntegerType(), new IntegerValue(3), new IntegerValue(0b101010000))];
+    $operators[] = new OperatorTestMeta(ImplementableOperator::TYPE_LEFT_SHIFT, $compatibleOperands);
+    // Operator >>
+    $compatibleOperands = [new CompatibleOperator(new IntegerType(), new IntegerType(), new IntegerValue(3), new IntegerValue(0b101))];
+    $operators[] = new OperatorTestMeta(ImplementableOperator::TYPE_RIGHT_SHIFT, $compatibleOperands);
+    $tests[] = [42, new IntegerType(), new IntegerType(), new FloatType(), new IntegerType(), new FloatType(), 'int', $operators, new IntegerValue(0b101010/*42*/), '42', true, new IntegerValue(42), new IntegerValue(1), true];
 
     /**
      * FloatType

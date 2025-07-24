@@ -1,15 +1,11 @@
 <?php
-
 declare(strict_types=1);
-
 namespace TimoLehnertz\formula\procedure;
 
 use TimoLehnertz\formula\FormulaRuntimeException;
 use TimoLehnertz\formula\type\Type;
 use TimoLehnertz\formula\type\Value;
 use TimoLehnertz\formula\ValueUnsetException;
-
-use const false;
 
 /**
  * @author Timo Lehnertz

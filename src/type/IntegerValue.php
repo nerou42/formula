@@ -1,8 +1,7 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 namespace TimoLehnertz\formula\type;
 
-use TimoLehnertz\formula\PrettyPrintOptions;
 use TimoLehnertz\formula\operator\ImplementableOperator;
 
 /**
@@ -17,7 +16,7 @@ class IntegerValue extends Value {
   }
 
   public function toString(): string {
-    return ''.$this->value;
+    return '' . $this->value;
   }
 
   public function copy(): Value {
@@ -29,9 +28,9 @@ class IntegerValue extends Value {
   }
 
   public function valueEquals(Value $other): bool {
-    if($other instanceof IntegerValue) {
+    if ($other instanceof IntegerValue) {
       return $other->toPHPValue() === $this->toPHPValue();
-    } else if($other instanceof FloatValue) {
+    } else if ($other instanceof FloatValue) {
       return $other->toPHPValue() == $this->toPHPValue();
     } else {
       return false;

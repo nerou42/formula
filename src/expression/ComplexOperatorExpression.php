@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 namespace TimoLehnertz\formula\expression;
 
 use TimoLehnertz\formula\nodes\Node;

@@ -4,8 +4,6 @@ namespace test\type\functions;
 use PHPUnit\Framework\TestCase;
 use TimoLehnertz\formula\Formula;
 use TimoLehnertz\formula\procedure\Scope;
-use const false;
-use const true;
 
 class FunctionTest extends TestCase {
 

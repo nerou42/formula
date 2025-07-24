@@ -107,7 +107,6 @@ class ScopeTest extends TestCase {
   }
 
   public function phpVarProvider(): array {
-    // @formatter:off
     return [
       [1, new IntegerType(), new IntegerValue(1)],
       [1.5, new FloatType(), new FloatValue(1.5)],
@@ -121,7 +120,6 @@ class ScopeTest extends TestCase {
         new ArrayValue(['string' => new IntegerValue(1), 2 => new BooleanValue(false)])
       ],
     ];
-    // @formatter:on
   }
 
   /**
@@ -137,7 +135,6 @@ class ScopeTest extends TestCase {
   public function testConvertPHPObject(): void {
     $object = new PHPTestClass(1, 2, [1, 2]);
     $res = Scope::convertPHPVar($object);
-    // @formatter:off
     $expectedClassType = new ClassType(
       new ClassType(null, ParentClass::class, [
         'i' => new FieldType(false, new IntegerType()),
@@ -149,7 +146,6 @@ class ScopeTest extends TestCase {
         'add' => new FieldType(true, new FunctionType(new OuterFunctionArgumentListType([new OuterFunctionArgument(new IntegerType(), false, false), new OuterFunctionArgument(new IntegerType(), false, false)], false), new IntegerType()))
       ]
     );
-    // @formatter:on
     $this->assertTrue($expectedClassType->equals($res[0]));
     $value = $res[1];
     $this->assertInstanceOf(PHPClassInstanceValue::class, $value);

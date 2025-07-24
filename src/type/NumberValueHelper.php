@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 namespace TimoLehnertz\formula\type;
 
 use TimoLehnertz\formula\FormulaRuntimeException;
@@ -53,6 +51,14 @@ abstract class NumberValueHelper {
         } else {
           return [new TypeType(new IntegerType())];
         }
+      case ImplementableOperator::TYPE_BITWISE_AND:
+      case ImplementableOperator::TYPE_BITWISE_OR:
+      case ImplementableOperator::TYPE_LOGICAL_XOR:
+      case ImplementableOperator::TYPE_LEFT_SHIFT:
+      case ImplementableOperator::TYPE_RIGHT_SHIFT:
+        if ($self instanceof IntegerType) {
+          return [new IntegerType()];
+        }
     }
     return [];
   }
@@ -98,6 +104,12 @@ abstract class NumberValueHelper {
       case ImplementableOperator::TYPE_GREATER:
       case ImplementableOperator::TYPE_LESS:
         return new BooleanType();
+      case ImplementableOperator::TYPE_BITWISE_AND:
+      case ImplementableOperator::TYPE_BITWISE_OR:
+      case ImplementableOperator::TYPE_LOGICAL_XOR:
+      case ImplementableOperator::TYPE_LEFT_SHIFT:
+      case ImplementableOperator::TYPE_RIGHT_SHIFT:
+        return $typeA instanceof IntegerType ? new IntegerType() : null;
       default:
         return null;
     }
@@ -152,6 +164,22 @@ abstract class NumberValueHelper {
         return new BooleanValue($self->toPHPValue() > $other->toPHPValue());
       case ImplementableOperator::TYPE_LESS:
         return new BooleanValue($self->toPHPValue() < $other->toPHPValue());
+      case ImplementableOperator::TYPE_BITWISE_AND:
+        return new IntegerValue($self->toPHPValue() & $other->toPHPValue());
+      case ImplementableOperator::TYPE_BITWISE_OR:
+        return new IntegerValue($self->toPHPValue() | $other->toPHPValue());
+      case ImplementableOperator::TYPE_LOGICAL_XOR:
+        return new IntegerValue($self->toPHPValue() ^ $other->toPHPValue());
+      case ImplementableOperator::TYPE_LEFT_SHIFT:
+        if (!($other instanceof IntegerValue)) {
+          throw new FormulaBugException("Expected an integer"); // Should not happen because this is enforced by the type system
+        }
+        return new IntegerValue($self->toPHPValue() << $other->toPHPValue());
+      case ImplementableOperator::TYPE_RIGHT_SHIFT:
+        if (!($other instanceof IntegerValue)) {
+          throw new FormulaBugException("Expected an integer"); // Should not happen because this is enforced by the type system
+        }
+        return new IntegerValue($self->toPHPValue() >> $other->toPHPValue());
       default:
         throw new FormulaBugException('Invalid operation number ' . $operator->toString(PrettyPrintOptions::buildDefault()));
     }

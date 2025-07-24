@@ -69,7 +69,7 @@ class TypeParser extends Parser {
       if($token === null) {
         break;
       }
-      if($token->id !== Token::INTL_BACKSLASH) {
+      if($token->id !== Token::BITWISE_OR) {
         break;
       } else {
         $token = $token->next();

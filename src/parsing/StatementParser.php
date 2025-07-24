@@ -8,7 +8,6 @@ namespace TimoLehnertz\formula\parsing;
 class StatementParser extends VariantParser {
 
   public function __construct() {
-    // @formatter:off
     parent::__construct('statement', [
       new CodeBlockParser(false, false),
       new FunctionParser(true),
@@ -23,6 +22,5 @@ class StatementParser extends VariantParser {
       new ForEachStatementParser(),
       new ForStatementParser(),
     ]);
-    // @formatter:on
   }
 }

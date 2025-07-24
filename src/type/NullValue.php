@@ -4,7 +4,6 @@ namespace TimoLehnertz\formula\type;
 
 use TimoLehnertz\formula\FormulaBugException;
 use TimoLehnertz\formula\operator\ImplementableOperator;
-use const false;
 
 /**
  * @author Timo Lehnertz
