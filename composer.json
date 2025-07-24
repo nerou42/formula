@@ -1,29 +1,37 @@
 {
-	"name" : "nerou/formula",
-	"description" : "An open source PHP formula parser based on https://github.com/socialist/formula",
-	"require" : {
-		"php" : ">=8.1"
+	"name": "nerou/formula",
+	"description": "An open source PHP formula parser based on https://github.com/socialist/formula",
+	"require": {
+		"php": ">=8.1"
 	},
-	"autoload" : {
-		"psr-4" : {
-			"TimoLehnertz\\formula\\" : "src/"
+	"autoload": {
+		"psr-4": {
+			"TimoLehnertz\\formula\\": "src/"
 		}
 	},
-	"keywords" : [
+	"keywords": [
 		"formula",
 		"math"
 	],
-	"readme" : "README.md",
-	"license" : "MIT",
-	"authors" : [{
-			"name" : "Social IST",
-			"email" : "sergey@socialist.pw"
-		}, {
-			"name" : "Timo Lehnertz"
+	"readme": "README.md",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Social IST",
+			"email": "sergey@socialist.pw"
+		},
+		{
+			"name": "Timo Lehnertz"
 		}
 	],
-	"require-dev" : {
+	"scripts": {
+		"phpunit": "phpunit test",
+		"tests": [
+			"@phpunit"
+		]
+	},
+	"require-dev": {
 		"psalm/phar": "5.23",
-		"phpunit/phpunit" : "9.5.*"
+		"phpunit/phpunit": "9.5.*"
 	}
 }
