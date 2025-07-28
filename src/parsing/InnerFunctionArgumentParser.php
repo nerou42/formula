@@ -32,13 +32,13 @@ class InnerFunctionArgumentParser extends Parser {
       $token = $token->requireNext();
     }
     if($token->id !== Token::IDENTIFIER) {
-      throw new ParsingException(ParsingException::ERROR_UNEXPECTED_TOKEN, 'Expected identifier');
+      throw new ParsingException(ParsingException::ERROR_UNEXPECTED_TOKEN, $token, 'Expected identifier');
     }
     $identifier = $token->value;
     $parsedExpression = null;
     if($token->hasNext() && $token->next()->id === Token::ASSIGNMENT) {
       if($isVarg) {
-        throw new ParsingException(ParsingException::ERROR_UNEXPECTED_TOKEN, 'Vargs can\'t have a default initilizer');
+        throw new ParsingException(ParsingException::ERROR_UNEXPECTED_TOKEN, $token, 'Vargs can\'t have a default initilizer');
       }
       $parsedExpression = (new ExpressionParser())->parse($token->next()->next());
       $token = $parsedExpression->nextToken;

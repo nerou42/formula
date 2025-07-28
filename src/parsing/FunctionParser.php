@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace TimoLehnertz\formula\parsing;
 
 use TimoLehnertz\formula\expression\FunctionExpression;
@@ -12,73 +14,73 @@ use TimoLehnertz\formula\type\VoidType;
 
 /**
  * @author Timo Lehnertz
+ * <Function value> ::= <Type>? <FunctionArguments> "->" <Expression> | ("{" <CodeBlock> "}")
  */
 class FunctionParser extends Parser {
 
   private readonly bool $parseStatement;
 
   public function __construct(bool $parseStatement) {
-    if($parseStatement) {
-      parent::__construct('function statement');
-    } else {
-      parent::__construct('function value');
-    }
+    parent::__construct($parseStatement ? 'function statement' : 'function value');
     $this->parseStatement = $parseStatement;
   }
 
   protected function parsePart(Token $firstToken): ParserReturn {
-    // var_dump('Moin');
-    if(!$this->parseStatement) {
+    if (!$this->parseStatement) {
       try {
         $parsedReturnType = (new TypeParser(false))->parse($firstToken);
         $token = $parsedReturnType->nextToken;
-      } catch(ParsingException | ParsingSkippedException $e) {
+      } catch (ParsingException | ParsingSkippedException) {
         $parsedReturnType = null;
         $token = $firstToken;
       }
     } else {
-      if($firstToken->id === Token::KEYWORD_VOID) {
+      if ($firstToken->id === Token::KEYWORD_VOID) {
         $parsedReturnType = new ParserReturn(new VoidType(), $firstToken->next());
       } else {
         $parsedReturnType = (new TypeParser(false))->parse($firstToken);
       }
       $token = $parsedReturnType->nextToken;
     }
-    if($token === null) {
+    if ($token === null) {
       throw new ParsingSkippedException();
     }
-    if($this->parseStatement) {
-      if($token->id !== Token::IDENTIFIER) {
+    if ($this->parseStatement) {
+      if ($token->id !== Token::IDENTIFIER) {
         throw new ParsingSkippedException();
       }
       $identifier = $token->value;
       $token = $token->next();
-      if($token === null) {
+      if ($token === null) {
         throw new ParsingSkippedException();
       }
     }
     $functionArgumentParser = new EnumeratedParser('Function arguments', new InnerFunctionArgumentParser(false), Token::BRACKETS_OPEN, Token::COMMA, Token::BRACKETS_CLOSED, false, true);
-    $parsedArguments = $functionArgumentParser->parse($token);
+    try {
+      $parsedArguments = $functionArgumentParser->parse($token);
+    } catch(ParsingException) {
+      throw new ParsingSkippedException();
+    }
     $token = $parsedArguments->nextToken;
     $normalArgs = [];
     $vArg = null;
-    for($i = 0;$i < count($parsedArguments->parsed);$i++) {
+    for ($i = 0; $i < count($parsedArguments->parsed); $i++) {
       $arg = $parsedArguments->parsed[$i];
-      if($arg instanceof InnerFunctionArgument) {
+      if ($arg instanceof InnerFunctionArgument) {
         $normalArgs[] = $arg;
-      } else if($arg instanceof InnerVargFunctionArgument) {
+      } else if ($arg instanceof InnerVargFunctionArgument) {
         $vArg = $arg;
-        if($i !== count($parsedArguments->parsed) - 1) {
+        if ($i !== count($parsedArguments->parsed) - 1) {
           throw new ParsingException(ParsingException::ERROR_VARG_NOT_LAST);
         }
       }
     }
-    if(!$this->parseStatement) {
+    if (!$this->parseStatement) {
       try {
         $parsedCodeBlock = (new ExpressionFunctionBodyParser())->parse($token);
-      } catch(ParsingSkippedException $e) {
+      } catch (ParsingSkippedException $e) {
         $parsedCodeBlock = (new CodeBlockParser(false, false))->parse($token);
-        if($parsedReturnType === null) {
+        if ($parsedReturnType === null) {
           throw new ParsingException(ParsingException::ERROR_UNEXPECTED_TOKEN, $token, 'Function requires return type');
         }
       }
@@ -86,7 +88,7 @@ class FunctionParser extends Parser {
       $parsedCodeBlock = (new CodeBlockParser(false, false))->parse($token);
     }
     $innerArgs = new InnerFunctionArgumentList($normalArgs, $vArg);
-    if($this->parseStatement) {
+    if ($this->parseStatement) {
       $parsed = new FunctionStatement($parsedReturnType->parsed, $identifier, $innerArgs, $parsedCodeBlock->parsed);
     } else {
       $parsed = new FunctionExpression($parsedReturnType?->parsed ?? null, $innerArgs, $parsedCodeBlock->parsed);

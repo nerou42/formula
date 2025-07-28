@@ -244,7 +244,7 @@ class FormulaTest extends TestCase {
 
   public function testVoidFunction(): void {
     new Formula('void r() {}');
-    $this->assertTrue(true); // assert no exception
+    $this->assertTrue(true); // assert no exception was thrown
   }
 
   public function testRecursiveFunction(): void {
@@ -259,6 +259,11 @@ class FormulaTest extends TestCase {
 
   public function testAnonymousVoidFunction(): void {
     $formula = new Formula('int b = 0;function(int) -> void a = void (int a) {b = a;}; a(1); return b;');
+    $this->assertEquals(1, $formula->calculate()->toPHPValue());
+  }
+
+  public function testGetNthBit(): void {
+    $formula = new Formula('((((int) 0b011) >> 1) & 1)');
     $this->assertEquals(1, $formula->calculate()->toPHPValue());
   }
 }
