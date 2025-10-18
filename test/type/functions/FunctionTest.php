@@ -4,6 +4,9 @@ namespace test\type\functions;
 use PHPUnit\Framework\TestCase;
 use TimoLehnertz\formula\Formula;
 use TimoLehnertz\formula\procedure\Scope;
+use TimoLehnertz\formula\type\functions\FunctionType;
+use TimoLehnertz\formula\type\MixedType;
+use TimoLehnertz\formula\type\Value;
 
 class FunctionTest extends TestCase {
 
@@ -45,5 +48,23 @@ class FunctionTest extends TestCase {
     $scope->definePHP(true, 'func1', [$this,'func1']);
     $formula = new Formula('"string "+func1', $scope);
     $this->assertEquals('string function', $formula->calculate()->toPHPValue());
+  }
+
+  public function passthrough(Value $input): Value {
+    return $input;
+  }
+
+  public function testPassthrough(): void {
+    $scope = new Scope();
+    $scope->definePHP(true, 'passthrough', $this->passthrough(...));
+    $functionType = $scope->use('passthrough');
+    if($functionType instanceof FunctionType) {
+      $this->assertInstanceOf(MixedType::class, $functionType->arguments->getArgumentType(0));
+    } else {
+      $this->fail('expected function type');
+    }
+    $formula = new Formula('passthrough("abc")', $scope);
+    $this->assertInstanceOf(MixedType::class, $formula->getReturnType());
+    $this->assertEquals('abc', $formula->calculate()->toPHPValue());
   }
 }

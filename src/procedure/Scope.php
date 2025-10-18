@@ -41,6 +41,7 @@ use TimoLehnertz\formula\type\EnumInstanceType;
 use TimoLehnertz\formula\type\EnumTypeType;
 use TimoLehnertz\formula\type\EnumInstanceValue;
 use TimoLehnertz\formula\type\EnumTypeValue;
+use TimoLehnertz\formula\type\functions\RuntimeFunctionArgsData;
 use TimoLehnertz\formula\type\functions\SpecificReturnType;
 use TimoLehnertz\formula\type\NeverType;
 
@@ -109,6 +110,9 @@ class Scope {
           return self::setNullable(new DateIntervalType(), $reflectionType->allowsNull());
         } else if ($reflectionType->getName() === \DateTimeImmutable::class) {
           return self::setNullable(new DateTimeImmutableType(), $reflectionType->allowsNull());
+        } else if ($reflectionType->getName() === Value::class) {
+          // Functions can accept values to avoid having to convert them when returning them. But in that case we cant know the type.
+          return self::setNullable(new MixedType(), $reflectionType->allowsNull());
         }
         return self::setNullable(Scope::reflectionClassToType(new \ReflectionClass($reflectionType->getName())), $reflectionType->allowsNull());
       } else if (interface_exists($reflectionType->getName())) {
@@ -248,6 +252,23 @@ class Scope {
     return $classType;
   }
 
+  public static function getFunctionRuntimeData(\ReflectionMethod|\ReflectionFunction $reflection): RuntimeFunctionArgsData {
+    $valueArgs = [];
+    $valueVarg = null;
+    $i = 0;
+    foreach ($reflection->getParameters() as $parameter) {
+      $parameterType = $parameter->getType();
+      if($parameterType instanceof \ReflectionNamedType && $parameterType->getName() === Value::class) {
+        $valueArgs[$i] = true;
+        if($parameter->isVariadic()) {
+          $valueVarg = $i;
+        }
+      }
+      $i++;
+    }
+    return new RuntimeFunctionArgsData($valueArgs, $valueVarg);
+  }
+
   /**
    * @param OuterFunctionArgumentListType|array<string, Type>|null|null $argumentType
    * @param ?callable(OuterFunctionArgumentListType): ?Type $specificFunctionReturnType
@@ -270,8 +291,10 @@ class Scope {
       $classType = Scope::reflectionClassToType($reflection);
       if ($reflection->getConstructor() === null) {
         $constructorFunctionType = new FunctionType(new OuterFunctionArgumentListType([], false), new VoidType());
+        $functionRuntimeDate = new RuntimeFunctionArgsData();
       } else {
         $constructorFunctionType = Scope::reflectionFunctionToType($reflection->getConstructor());
+        $functionRuntimeDate = static::getFunctionRuntimeData($reflection->getConstructor());
       }
       $constructor = new ConstructorValue(new PHPFunctionBody(function (...$args) use ($reflection) {
         $phpArgs = [];
@@ -279,7 +302,7 @@ class Scope {
           $phpArgs[] = $arg;
         }
         return new PHPClassInstanceValue($reflection->newInstance(...$phpArgs));
-      }, false));
+      }, false, $functionRuntimeDate));
 
       $contructorType = new ConstructorType($constructorFunctionType->arguments, $classType);
 
@@ -301,7 +324,7 @@ class Scope {
         $reflection = new \ReflectionFunction($value);
       }
       $functionType = Scope::reflectionFunctionToType($reflection, $argumentType, $generalReturnType, $specificFunctionReturnType);
-      $functionBody = new PHPFunctionBody($value, $functionType->generalReturnType instanceof VoidType);
+      $functionBody = new PHPFunctionBody($value, $functionType->generalReturnType instanceof VoidType, static::getFunctionRuntimeData($reflection));
       return [$functionType, new FunctionValue($functionBody)];
     } else if (is_array($value)) {
       $values = [];

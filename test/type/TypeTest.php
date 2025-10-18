@@ -46,6 +46,7 @@ use TimoLehnertz\formula\type\classes\ClassTypeType;
 use TimoLehnertz\formula\type\classes\ConstructorType;
 use TimoLehnertz\formula\type\classes\ClassTypeValue;
 use TimoLehnertz\formula\type\classes\ConstructorValue;
+use TimoLehnertz\formula\type\functions\RuntimeFunctionArgsData;
 
 class TypeTest extends TestCase {
 
@@ -310,10 +311,10 @@ class TypeTest extends TestCase {
     $args = new OuterFunctionArgumentListType([], false);
     $functionValue = new FunctionValue(new PHPFunctionBody(function () {
       return 0;
-    }, true));
+    }, true, new RuntimeFunctionArgsData()));
     $functionValue2 = new FunctionValue(new PHPFunctionBody(function () {
       return 0;
-    }, true));
+    }, true, new RuntimeFunctionArgsData()));
     $tests[] = ['callable', new FunctionType($args, new VoidType()), new FunctionType($args, new VoidType()), new DateTimeImmutableType(), new FunctionType($args, new VoidType()), new FunctionType($args, new IntegerType()), 'function() -> void', $operators, $functionValue, 'function', true, $functionValue, $functionValue2, true];
 
     /**
@@ -377,7 +378,7 @@ class TypeTest extends TestCase {
     $classTypeType = new ClassTypeType(new ConstructorType(new OuterFunctionArgumentListType([], false), $classType));
     $constructor = new ConstructorValue(new PHPFunctionBody(function () {
       return new IntegerValue(1);
-    }, false));
+    }, false, new RuntimeFunctionArgsData()));
     $classTypeValue = new ClassTypeValue($constructor);
     $constructorType = new ConstructorType(new OuterFunctionArgumentListType([], false), $classType);
     $operators = [];

@@ -16,14 +16,20 @@ class PHPFunctionBody implements FunctionBody {
    */
   private readonly mixed $callable;
 
+  private readonly RuntimeFunctionArgsData $runtimeData;
+
   /**
    * PHP void Functions always return null
    */
   private readonly bool $voidFunction;
 
-  public function __construct(callable $callable, bool $voidFunction) {
+  /**
+   * @param array<int, mixed> $valueParams
+   */
+  public function __construct(callable $callable, bool $voidFunction, RuntimeFunctionArgsData $runtimeData) {
     $this->callable = $callable;
     $this->voidFunction = $voidFunction;
+    $this->runtimeData = $runtimeData;
   }
 
   public function call(OuterFunctionArgumentListValue $argList): Value {
@@ -31,7 +37,11 @@ class PHPFunctionBody implements FunctionBody {
     for($i = 0;$i < count($argList->getValues());$i++) {
       /** @var Value $argValue */
       $argValue = $argList->getValues()[$i];
-      $args[$i] = $argValue->toPHPValue();
+      if($this->runtimeData->argAcceptsValue($i)) {
+        $args[$i] = $argValue;
+      } else {
+        $args[$i] = $argValue->toPHPValue();
+      }
     }
     $phpReturn = call_user_func_array($this->callable, $args);
     if(!$this->voidFunction) {

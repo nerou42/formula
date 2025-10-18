@@ -47,11 +47,12 @@ class PHPClassInstanceValue extends Value {
       if ($this->reflection->hasMethod($other->getMemberIdentifier())) {
         $instance = $this->instance;
         $reflection = $this->reflection;
-        $returnType = $reflection->getMethod($other->getMemberIdentifier())->getReturnType();
+        $methodReflection = $reflection->getMethod($other->getMemberIdentifier());
+        $returnType = $methodReflection->getReturnType();
         $isVoid = $returnType instanceof \ReflectionNamedType && $returnType->getName() === 'void';
         return new FunctionValue(new PHPFunctionBody(function (...$args) use (&$instance, &$reflection, &$other) {
           return Scope::convertPHPVar($reflection->getMethod($other->getMemberIdentifier())->invoke($instance, ...$args), true)[1];
-        }, $isVoid));
+        }, $isVoid, Scope::getFunctionRuntimeData($methodReflection)));
       }
     }
     throw new FormulaBugException('Invalid operation ' . $operator->getID());
