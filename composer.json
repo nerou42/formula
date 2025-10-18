@@ -33,6 +33,7 @@
 	},
 	"require-dev": {
 		"psalm/phar": "5.23",
-		"phpunit/phpunit": "9.5.*"
+		"phpunit/phpunit": "9.5.*",
+		"phpbench/phpbench": "^1.4"
 	}
 }
