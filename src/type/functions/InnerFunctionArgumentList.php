@@ -67,7 +67,7 @@ class InnerFunctionArgumentList {
         $values[] = $args->getValues()[$i];
       }
       $arrayType = new ArrayType(new IntegerType(), $this->varg->type);
-      $arrayValue = new ArrayValue($values, $arrayType);
+      $arrayValue = new ArrayValue($values);
       $scope->define($this->varg->final, $arrayType, $this->varg->name, $arrayValue);
     }
   }

@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace TimoLehnertz\formula\statement;
 
-use TimoLehnertz\formula\FormulaBugException;
 use TimoLehnertz\formula\FormulaValidationException;
 use TimoLehnertz\formula\PrettyPrintOptions;
 use TimoLehnertz\formula\expression\Expression;
@@ -23,9 +22,9 @@ class ForEachStatement extends Statement {
 
   private readonly string $elementIdentifier;
 
-  private Expression $getterExpression;
+  private readonly Expression $getterExpression;
 
-  private CodeBlock $body;
+  private readonly CodeBlock $body;
 
   public function __construct(bool $final, ?Type $elementType, string $elementIdentifier, Expression $getterExpression, CodeBlock $body) {
     parent::__construct();
@@ -43,7 +42,7 @@ class ForEachStatement extends Statement {
     }
     if ($this->elementType === null) {
       $this->elementType = $getterType->getElementsType();
-    } else if (!$this->elementType->assignableBy($getterType->getElementsType(), false)) {
+    } else if (!$this->elementType->assignableBy($getterType->getElementsType())) {
       throw new FormulaValidationException($this->elementType->getIdentifier() . ' is not assignable by ' . $getterType->getElementsType()->getIdentifier());
     }
     $loopScope = $scope->buildChild();
@@ -70,7 +69,7 @@ class ForEachStatement extends Statement {
     return new StatementReturn(null, false, false);
   }
 
-  public function toString(?PrettyPrintOptions $prettyPrintOptions): string {
+  public function toString(PrettyPrintOptions $prettyPrintOptions): string {
     $typeStr = $this->elementType === null ? 'var' : $this->elementType->getIdentifier();
     return 'for (' . $typeStr . ' ' . $this->elementIdentifier . ' : ' . $this->getterExpression->toString($prettyPrintOptions) . ') ' . $this->body->toString($prettyPrintOptions);
   }

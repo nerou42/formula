@@ -22,7 +22,7 @@ class RuntimeFunctionArgsData {
   private readonly ?int $valueVarg;
 
   /**
-   * @param array<int, mixed> $valueParams
+   * @param array<int, mixed> $valueArgs
    */
   public function __construct(array $valueArgs = [], ?int $valueVarg = null) {
     $this->valueArgs = $valueArgs;

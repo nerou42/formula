@@ -31,7 +31,7 @@ class ReturnStatement extends Statement {
       return new StatementReturnType(new VoidType(), Frequency::ALWAYS, Frequency::ALWAYS);
     } else if($allowedReturnType !== null) {
       $implicidType = $this->expression->validate($scope);
-      $this->expression = OperatorExpression::castExpression($this->expression, $implicidType, $allowedReturnType, $scope, $this);
+      $this->expression = OperatorExpression::castExpression($this->expression, $implicidType, $allowedReturnType, $scope);
     }
     return new StatementReturnType($this->expression->validate($scope), Frequency::ALWAYS, Frequency::ALWAYS);
   }
@@ -40,7 +40,7 @@ class ReturnStatement extends Statement {
     return new StatementReturn($this->expression?->run($scope) ?? new VoidValue(), false, false);
   }
 
-  public function toString(?PrettyPrintOptions $prettyPrintOptions): string {
+  public function toString(PrettyPrintOptions $prettyPrintOptions): string {
     if($this->expression === null) {
       return 'return;';
     }

@@ -27,7 +27,7 @@ class VariantParser extends Parser {
     foreach($this->parsers as $parser) {
       try {
         return $parser->parse($firstToken);
-      } catch(ParsingSkippedException $e) {} // try the next one
+      } catch(ParsingSkippedException) {} // try the next one
     }
     throw new ParsingSkippedException();
   }

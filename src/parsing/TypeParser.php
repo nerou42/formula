@@ -29,7 +29,7 @@ class TypeParser extends Parser {
 
   private readonly bool $allowFinal;
 
-  private bool $final;
+  private bool $final = false;
 
   public function __construct(bool $allowFinal) {
     parent::__construct('type');
@@ -78,10 +78,7 @@ class TypeParser extends Parser {
     if(count($types) === 0) {
       throw new ParsingException(ParsingException::ERROR_INVALID_TYPE, $firstToken);
     }
-    $type = CompoundType::buildFromTypes($types, $this->final);
-    if($type === null) {
-      throw new ParsingException(ParsingException::ERROR_INVALID_TYPE, $firstToken);
-    }
+    $type = CompoundType::buildFromTypes($types);
     if($inBrackets) {
       if($token === null || $token->id !== Token::BRACKETS_CLOSED) {
         throw new ParsingSkippedException();
@@ -112,7 +109,7 @@ class TypeParser extends Parser {
       $token = $token->next();
     }
     while($arrayDimension > 0) {
-      $type = new ArrayType(new IntegerType($this->final), $type, $this->final);
+      $type = new ArrayType(new IntegerType(), $type);
       $arrayDimension--;
     }
     return new ParserReturn($type, $token);
@@ -120,16 +117,16 @@ class TypeParser extends Parser {
 
   private function parseSingleType(Token $firstToken): ParserReturn {
     if($firstToken->id === Token::KEYWORD_BOOL) {
-      $type = new BooleanType($this->final);
+      $type = new BooleanType();
       $token = $firstToken->next();
     } else if($firstToken->id === Token::KEYWORD_INT) {
-      $type = new IntegerType($this->final);
+      $type = new IntegerType();
       $token = $firstToken->next();
     } else if($firstToken->id === Token::KEYWORD_FLOAT) {
-      $type = new FloatType($this->final);
+      $type = new FloatType();
       $token = $firstToken->next();
     } else if($firstToken->id === Token::KEYWORD_STRING) {
-      $type = new StringType($this->final);
+      $type = new StringType();
       $token = $firstToken->next();
     } else if($firstToken->id === Token::KEYWORD_VOID) {
       $type = new VoidType();

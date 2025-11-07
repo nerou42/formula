@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace TimoLehnertz\formula\procedure;
 
 use TimoLehnertz\formula\FormulaRuntimeException;
@@ -26,27 +27,25 @@ class DefaultScope extends Scope {
   public function __construct() {
     $intOrFloat = CompoundType::buildFromTypes([new FloatType(), new IntegerType()]);
     $numberVargType = new OuterFunctionArgumentListType([new OuterFunctionArgument(CompoundType::buildFromTypes([new FloatType(), new IntegerType(), new ArrayType(new MixedType(), $intOrFloat)]), true, true)], true);
-    $this->definePHP(true, 'print', [DefaultScope::class, 'printFunc']);
-    $this->definePHP(true, 'println', [DefaultScope::class, 'printlnFunc']);
-    $this->definePHP(true, 'pow', [DefaultScope::class, 'powFunc']);
-    $this->definePHP(true, "min", [DefaultScope::class, "minFunc"], $numberVargType);
-    $this->definePHP(true, "max", [DefaultScope::class, "maxFunc"], $numberVargType);
-    $this->definePHP(true, "sqrt", [DefaultScope::class, "sqrtFunc"]);
-    $this->definePHP(true, "ceil", [DefaultScope::class, "ceilFunc"]);
-    $this->definePHP(true, "floor", [DefaultScope::class, "floorFunc"]);
-    $this->definePHP(true, "round", [DefaultScope::class, "roundFunc"]);
-    $this->definePHP(true, "sin", [DefaultScope::class, "sinFunc"]);
-    $this->definePHP(true, "cos", [DefaultScope::class, "cosFunc"]);
-    $this->definePHP(true, "tan", [DefaultScope::class, "tanFunc"]);
-    $this->definePHP(true, "is_nan", [DefaultScope::class, "is_nanFunc"]);
-    $this->definePHP(true, "abs", [DefaultScope::class, "absFunc"]);
-    $this->definePHP(true, "asVector", [DefaultScope::class, "asVectorFunc"]);
-    $this->definePHP(true, "sizeof", [DefaultScope::class, "sizeofFunc"]);
-    $this->definePHP(true, "inRange", [DefaultScope::class, "inRangeFunc"]);
-    $this->definePHP(true, "reduce", [DefaultScope::class, "reduceFunc"], null, null, new SpecificReturnType('FORMULA_REDUCE', function (OuterFunctionArgumentListType $args): ?Type {
-      return $args->getArgumentType(0);
-    }));
-    $this->definePHP(true, "firstOrNull", [DefaultScope::class, "firstOrNullFunc"], null, null, new SpecificReturnType('FORMULA_FIRST_OR_NULL', function (OuterFunctionArgumentListType $args): ?Type {
+    $this->definePHP(true, 'print', self::printFunc(...));
+    $this->definePHP(true, 'println', self::printlnFunc(...));
+    $this->definePHP(true, 'pow', self::powFunc(...));
+    $this->definePHP(true, "min", self::minFunc(...), $numberVargType);
+    $this->definePHP(true, "max", self::maxFunc(...), $numberVargType);
+    $this->definePHP(true, "sqrt", self::sqrtFunc(...));
+    $this->definePHP(true, "ceil", self::ceilFunc(...));
+    $this->definePHP(true, "floor", self::floorFunc(...));
+    $this->definePHP(true, "round", self::roundFunc(...));
+    $this->definePHP(true, "sin", self::sinFunc(...));
+    $this->definePHP(true, "cos", self::cosFunc(...));
+    $this->definePHP(true, "tan", self::tanFunc(...));
+    $this->definePHP(true, "is_nan", self::is_nanFunc(...));
+    $this->definePHP(true, "abs", self::absFunc(...));
+    $this->definePHP(true, "asVector", self::asVectorFunc(...));
+    $this->definePHP(true, "sizeof", self::sizeofFunc(...));
+    $this->definePHP(true, "inRange", self::inRangeFunc(...));
+    $this->definePHP(true, "reduce", self::reduceFunc(...), null, null, new SpecificReturnType('FORMULA_REDUCE', static fn(OuterFunctionArgumentListType $args): ?Type => $args->getArgumentType(0)));
+    $this->definePHP(true, "firstOrNull", self::firstOrNullFunc(...), null, null, new SpecificReturnType('FORMULA_FIRST_OR_NULL', static function (OuterFunctionArgumentListType $args): ?Type {
       $type = $args->getArgumentType(0);
       if ($type instanceof ArrayType) {
         if ($type->getElementsType() instanceof NeverType) {
@@ -55,7 +54,7 @@ class DefaultScope extends Scope {
         return CompoundType::buildFromTypes([new NullType(), $type->getElementsType()]);
       }
     }));
-    $this->definePHP(true, "lastOrNull", [DefaultScope::class, "lastOrNullFunc"], null, null, new SpecificReturnType('FORMULA_FIRST_OR_NULL', function (OuterFunctionArgumentListType $args): ?Type {
+    $this->definePHP(true, "lastOrNull", self::lastOrNullFunc(...), null, null, new SpecificReturnType('FORMULA_FIRST_OR_NULL', function (OuterFunctionArgumentListType $args): ?Type {
       $type = $args->getArgumentType(0);
       if ($type instanceof ArrayType) {
         if ($type->getElementsType() instanceof NeverType) {
@@ -64,18 +63,17 @@ class DefaultScope extends Scope {
         return CompoundType::buildFromTypes([new NullType(), $type->getElementsType()]);
       }
     }));
-    $this->definePHP(true, "assertTrue", [DefaultScope::class, "assertTrueFunc"]);
-    $this->definePHP(true, "assertFalse", [DefaultScope::class, "assertFalseFunc"]);
-    $this->definePHP(true, "assertEquals", [DefaultScope::class, "assertEqualsFunc"]);
+    $this->definePHP(true, "assertTrue", self::assertTrueFunc(...));
+    $this->definePHP(true, "assertFalse", self::assertFalseFunc(...));
+    $this->definePHP(true, "assertEquals", self::assertEqualsFunc(...));
     
-    $this->definePHP(true, "sum", [DefaultScope::class, "sumFunc"], $numberVargType);
-    $this->definePHP(true, "avg", [DefaultScope::class, "avgFunc"], $numberVargType);
+    $this->definePHP(true, "sum", self::sumFunc(...), $numberVargType);
+    $this->definePHP(true, "avg", self::avgFunc(...), $numberVargType);
     $callbackType = new FunctionType(new OuterFunctionArgumentListType([new OuterFunctionArgument(new MixedType())]), new BooleanType());
-    $this->definePHP(true, "array_filter", [DefaultScope::class, "array_filterFunc"], ['callback' => $callbackType], null, new SpecificReturnType('FORMULA_ARRAY_FILTER', function (OuterFunctionArgumentListType $args): ?Type {
-      return $args->getArgumentType(0);
-    }));
+    $this->definePHP(true, "array_filter", self::array_filterFunc(...), ['callback' => $callbackType], null, 
+        new SpecificReturnType('FORMULA_ARRAY_FILTER', static fn(OuterFunctionArgumentListType $args): ?Type => $args->getArgumentType(0)));
 
-    $this->definePHP(true, "earlyReturnIfNull", [DefaultScope::class, "earlyReturnIfNullFunc"], null, null, new SpecificReturnType('FORMULA_EARLY_RETURN_IF_NULL', function (OuterFunctionArgumentListType $args): ?Type {
+    $this->definePHP(true, "earlyReturnIfNull", self::earlyReturnIfNullFunc(...), null, null, new SpecificReturnType('FORMULA_EARLY_RETURN_IF_NULL', static function (OuterFunctionArgumentListType $args): ?Type {
       $type = $args->getArgumentType(0);
       if ($type instanceof CompoundType) {
         return $type->eliminateType(new NullType());
@@ -138,7 +136,7 @@ class DefaultScope extends Scope {
   }
 
   public static function powFunc(float $base, float $exp): float {
-    return (float) pow($base, $exp);
+    return $base ** $exp;
   }
 
   public static function sqrtFunc(float $arg): float {
@@ -228,19 +226,19 @@ class DefaultScope extends Scope {
     return $sum / self::sizeofFunc($values);
   }
 
-  public static function assertTrueFunc(bool $condition) {
+  public static function assertTrueFunc(bool $condition): void {
     if ($condition === false) {
       throw new FormulaRuntimeException('failed asserting that false is true');
     }
   }
 
-  public static function assertEqualsFunc($expected, $actual, string $message = '') {
+  public static function assertEqualsFunc(mixed $expected, mixed $actual, string $message = ''): void {
     if ($expected != $actual) {
       throw new FormulaRuntimeException('failed asserting that ' . var_export($actual, true) . ' equals ' . var_export($expected, true) . ' ' . $message);
     }
   }
 
-  public static function assertFalseFunc(bool $condition, string $message = '') {
+  public static function assertFalseFunc(bool $condition, string $message = ''): void {
     if ($condition === true) {
       throw new FormulaRuntimeException('failed asserting that true is false');
     }

@@ -16,9 +16,6 @@ class FunctionType extends Type {
 
   private readonly ?SpecificReturnType $specificReturnType;
 
-  /**
-   * @param ?callable(OuterFunctionArgumentListType): ?Type $specificReturnType
-   */
   public function __construct(OuterFunctionArgumentListType $arguments, Type $generalReturnType, ?SpecificReturnType $specificReturnType = null) {
     parent::__construct();
     $this->arguments = $arguments;
@@ -30,7 +27,7 @@ class FunctionType extends Type {
     if(!($type instanceof FunctionType)) {
       return false;
     }
-    return $this->arguments->assignableBy($type->arguments, true) && $this->generalReturnType->assignableBy($type->generalReturnType, true);
+    return $this->arguments->assignableBy($type->arguments) && $this->generalReturnType->assignableBy($type->generalReturnType);
   }
 
   public function equals(Type $type): bool {

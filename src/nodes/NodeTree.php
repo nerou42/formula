@@ -24,14 +24,17 @@ class NodeTree {
   }
 
   /**
-   * @psalm-return array{rootNode: array{
-   *   nodeType: string,
-   *   connected: list<array>,
-   *   properties: array<string, mixed>
-   * }, scope: array<string, @psalm-return array{
-   *   typeName: string,
-   *   properties?: array<string, mixed>
-   * }>}
+   * @psalm-return array{
+   *    rootNode: array{
+   *      nodeType: string,
+   *      connected: list<array>,
+   *      properties: array<string, mixed>
+   *    },
+   *    scope: array<string, array{
+   *      typeName: string,
+   *      properties?: array<string, mixed>
+   *    }>
+   *  }
    */
   public function toArray(): array {
     return ['rootNode' => $this->rootNode, 'scope' => $this->scope];

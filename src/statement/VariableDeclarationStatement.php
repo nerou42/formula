@@ -32,7 +32,7 @@ class VariableDeclarationStatement extends Statement {
   public function validateStatement(Scope $scope, ?Type $allowedReturnType = null): StatementReturnType {
     $implicitType = $this->initializer->validate($scope);
     if ($this->type !== null) {
-      $this->initializer = OperatorExpression::castExpression($this->initializer, $implicitType, $this->type, $scope, $this);
+      $this->initializer = OperatorExpression::castExpression($this->initializer, $implicitType, $this->type, $scope);
       $this->initializer->validate($scope);
     } else {
       $this->type = $implicitType;
@@ -47,7 +47,7 @@ class VariableDeclarationStatement extends Statement {
     return new StatementReturn(null, false, false);
   }
 
-  public function toString(?PrettyPrintOptions $prettyPrintOptions): string {
+  public function toString(PrettyPrintOptions $prettyPrintOptions): string {
     return ($this->final ? 'final ' : '') . $this->type->getIdentifier() . ' ' . $this->identifier . ' = ' . $this->initializer->toString($prettyPrintOptions) . ';';
   }
 }

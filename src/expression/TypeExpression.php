@@ -15,14 +15,14 @@ use TimoLehnertz\formula\type\Value;
  */
 class TypeExpression implements Expression {
 
-  private Type $type;
+  private readonly Type $type;
 
   public function __construct(Type $type) {
     $this->type = $type;
   }
 
   public function validate(Scope $scope): Type {
-    return new TypeType($this->type, true);
+    return new TypeType($this->type);
   }
 
   public function run(Scope $scope): Value {

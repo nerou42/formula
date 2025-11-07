@@ -48,7 +48,7 @@ class StatementReturnType {
       $returnTypes[] = $other->returnType;
     }
     if(count($returnTypes) > 0) {
-      $returnType = CompoundType::buildFromTypes($returnTypes, false);
+      $returnType = CompoundType::buildFromTypes($returnTypes);
     } else {
       $returnType = null;
     }
@@ -70,7 +70,7 @@ class StatementReturnType {
       $returnTypes[] = $other->returnType;
     }
     if(count($returnTypes) > 0) {
-      $returnType = CompoundType::buildFromTypes($returnTypes, false);
+      $returnType = CompoundType::buildFromTypes($returnTypes);
     } else {
       $returnType = null;
     }

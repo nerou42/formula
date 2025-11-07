@@ -31,26 +31,17 @@ class ConstantExpressionParser extends Parser {
   }
 
   protected function parsePart(Token $firstToken): ParserReturn {
-    switch ($firstToken->id) {
-      case Token::FLOAT_CONSTANT:
-        return new ParserReturn(new ConstantExpression(new FloatType(true), new FloatValue(floatval($firstToken->value)), $firstToken->value), $firstToken->next());
-      case Token::INT_CONSTANT:
-        return new ParserReturn(new ConstantExpression(new IntegerType(true), new IntegerValue(intval($firstToken->value)), $firstToken->value), $firstToken->next());
-      case Token::KEYWORD_FALSE:
-        return new ParserReturn(new ConstantExpression(new BooleanType(true), new BooleanValue(false), $firstToken->value), $firstToken->next());
-      case Token::KEYWORD_TRUE:
-        return new ParserReturn(new ConstantExpression(new BooleanType(true), new BooleanValue(true), $firstToken->value), $firstToken->next());
-      case Token::STRING_CONSTANT:
-        return new ParserReturn(new ConstantExpression(new StringType(true), new StringValue($firstToken->value), "'" . $firstToken->value . "'"), $firstToken->next());
-      case Token::KEYWORD_NULL:
-        return new ParserReturn(new ConstantExpression(new NullType(true), new NullValue(), $firstToken->value), $firstToken->next());
-      case Token::DATE_TIME:
-        return new ParserReturn(new ConstantExpression(new DateTimeImmutableType(), new DateTimeImmutableValue(new \DateTimeImmutable($firstToken->value)), "'" . $firstToken->value . "'"), $firstToken->next());
-      case Token::DATE_INTERVAL:
-        return new ParserReturn(new ConstantExpression(new DateIntervalType(), new DateIntervalValue(new \DateInterval($firstToken->value)), "'" . $firstToken->value . "'"), $firstToken->next());
-      case Token::KEYWORD_VOID:
-        return new ParserReturn(new ConstantExpression(new VoidType(), new VoidValue(), 'void'), $firstToken->next());
-    }
-    throw new ParsingSkippedException();
+    return match($firstToken->id) {
+      Token::FLOAT_CONSTANT => new ParserReturn(new ConstantExpression(new FloatType(), new FloatValue(floatval($firstToken->value)), $firstToken->value), $firstToken->next()),
+      Token::INT_CONSTANT => new ParserReturn(new ConstantExpression(new IntegerType(), new IntegerValue(intval($firstToken->value)), $firstToken->value), $firstToken->next()),
+      Token::KEYWORD_FALSE => new ParserReturn(new ConstantExpression(new BooleanType(), new BooleanValue(false), $firstToken->value), $firstToken->next()),
+      Token::KEYWORD_TRUE => new ParserReturn(new ConstantExpression(new BooleanType(), new BooleanValue(true), $firstToken->value), $firstToken->next()),
+      Token::STRING_CONSTANT => new ParserReturn(new ConstantExpression(new StringType(), new StringValue($firstToken->value), "'" . $firstToken->value . "'"), $firstToken->next()),
+      Token::KEYWORD_NULL => new ParserReturn(new ConstantExpression(new NullType(), new NullValue(), $firstToken->value), $firstToken->next()),
+      Token::DATE_TIME => new ParserReturn(new ConstantExpression(new DateTimeImmutableType(), new DateTimeImmutableValue(new \DateTimeImmutable($firstToken->value)), "'" . $firstToken->value . "'"), $firstToken->next()),
+      Token::DATE_INTERVAL => new ParserReturn(new ConstantExpression(new DateIntervalType(), new DateIntervalValue(new \DateInterval($firstToken->value)), "'" . $firstToken->value . "'"), $firstToken->next()),
+      Token::KEYWORD_VOID => new ParserReturn(new ConstantExpression(new VoidType(), new VoidValue(), 'void'), $firstToken->next()),
+      default => throw new ParsingSkippedException()
+    };
   }
 }

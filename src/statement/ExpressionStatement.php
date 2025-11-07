@@ -12,7 +12,7 @@ use TimoLehnertz\formula\type\Type;
  */
 class ExpressionStatement extends Statement {
 
-  private Expression $expression;
+  private readonly Expression $expression;
 
   public function __construct(Expression $expression) {
     parent::__construct();
@@ -29,7 +29,7 @@ class ExpressionStatement extends Statement {
     return new StatementReturn(null, false, false);
   }
 
-  public function toString(?PrettyPrintOptions $prettyPrintOptions): string {
+  public function toString(PrettyPrintOptions $prettyPrintOptions): string {
     return $this->expression->toString($prettyPrintOptions).';';
   }
 }

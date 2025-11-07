@@ -39,7 +39,7 @@ class Formula {
     if ($firstToken === null) {
       throw new TokenisationException('Invalid formula', 0, 0);
     }
-    $parsedContent = (new CodeBlockOrExpressionParser(true))->parse($firstToken, true, true);
+    $parsedContent = (new CodeBlockOrExpressionParser())->parse($firstToken, true, true);
     $this->content = $parsedContent->parsed;
     $this->returnType = $this->content->validate($this->buildScope(), $expectedReturnType)->returnType ?? new VoidType();
   }

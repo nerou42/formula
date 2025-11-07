@@ -21,7 +21,7 @@ class NeverType extends Type {
     return $type instanceof NeverType;
   }
 
-  public function getIdentifier(bool $isNested = false): string {
+  public function getIdentifier(bool $nested = false): string {
     return 'never';
   }
 

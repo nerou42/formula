@@ -31,7 +31,7 @@ class EnumInstanceType extends Type {
     return null;
   }
 
-  public function getIdentifier(bool $isNested = false): string {
+  public function getIdentifier(bool $nested = false): string {
     return 'EnumInstanceType('.$this->enumType->getIdentifier().')';
   }
 

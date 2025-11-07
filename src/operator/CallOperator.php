@@ -15,7 +15,7 @@ use TimoLehnertz\formula\procedure\Scope;
  */
 class CallOperator implements ParsedOperator {
 
-  private ArgumentListExpression $arguments;
+  private readonly ArgumentListExpression $arguments;
 
   public function __construct(ArgumentListExpression $arguments) {
     $this->arguments = $arguments;

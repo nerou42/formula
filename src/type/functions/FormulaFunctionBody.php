@@ -42,7 +42,7 @@ class FormulaFunctionBody implements FormulaPart, FunctionBody {
     if($codeBlockReturn->returnFrequency !== Frequency::ALWAYS) {
       $returnTypes[] = new VoidType();
     }
-    $implicitReturnType = CompoundType::buildFromTypes($returnTypes, false);
+    $implicitReturnType = CompoundType::buildFromTypes($returnTypes);
     if($expectedReturnType !== null && !$expectedReturnType->assignableBy($implicitReturnType)) {
       throw new FormulaValidationException($expectedReturnType->getIdentifier().' function can\'t return '.$implicitReturnType->getIdentifier());
     }

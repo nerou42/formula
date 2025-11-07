@@ -30,11 +30,10 @@ class ClassTypeValue extends Value {
   }
 
   protected function valueOperate(ImplementableOperator $operator, ?Value $other): Value {
-    switch($operator->getID()) {
-      case ImplementableOperator::TYPE_NEW:
-        return $this->constructor;
-    }
-    throw new FormulaBugException('Invalid operation');
+    return match($operator->getID()) {
+      ImplementableOperator::TYPE_NEW => $this->constructor,
+      default => throw new FormulaBugException('Invalid operation')
+    };
   }
 
   public function toPHPValue(): mixed {

@@ -23,7 +23,7 @@ class BreakStatement extends Statement {
     return new StatementReturn(null, true, false);
   }
 
-  public function toString(?PrettyPrintOptions $prettyPrintOptions): string {
+  public function toString(PrettyPrintOptions $prettyPrintOptions): string {
     return 'break;';
   }
 }

@@ -45,7 +45,7 @@ class IfStatement extends Statement {
     }
   }
 
-  public function toString(?PrettyPrintOptions $prettyPrintOptions): string {
+  public function toString(PrettyPrintOptions $prettyPrintOptions): string {
     if($this->condition !== null) {
       $str = 'if ('.$this->condition->toString($prettyPrintOptions).') '.$this->body->toString($prettyPrintOptions);
       if($this->else !== null) {

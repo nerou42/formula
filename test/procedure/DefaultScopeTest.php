@@ -51,9 +51,9 @@ class DefaultScopeTest extends TestCase {
       ["lastOrNull({})", new NullType(), null, null],
       ["lastOrNull({null})", new NullType(), null, null],
       ["lastOrNull({1.5,2,3})", CompoundType::buildFromTypes([new NullType(), new IntegerType(), new FloatType()]), 3, null],
-      ["assertTrue(true)", new MixedType(), null, null],
-      ["assertFalse(false)", new MixedType(), null, null],
-      ["assertEquals(6,1+2+3)", new MixedType(), null, null],
+      ["assertTrue(true)", new VoidType(), null, null],
+      ["assertFalse(false)", new VoidType(), null, null],
+      ["assertEquals(6,1+2+3)", new VoidType(), null, null],
       ["sum(1,{1,2,3.5}, 5.5, {5,7+8+9})", new FloatType(), 42, null],
       ["sizeof({1,{{{2}},3},4}, 5, {6,7+8+9})", new IntegerType(), 7, null],
       ["avg(1,{1,2,3.5}, 5.5, {5,7+8+9})", new FloatType(), 42.0 / 7, null],
@@ -76,7 +76,7 @@ class DefaultScopeTest extends TestCase {
     if($expectedOutput !== null) {
       $this->expectOutputString($expectedOutput);
     }
-    $this->assertTrue($expectedReturnType->equals($formula->getReturnType()));
+    $this->assertTrue($expectedReturnType->equals($formula->getReturnType()), $formula->getReturnType()::class);
     $result = $formula->calculate();
     if(($expectedReturnType instanceof VoidType)) {
       $this->assertInstanceOf(VoidValue::class, $result);
@@ -106,8 +106,8 @@ class DefaultScopeTest extends TestCase {
 
   public function testEarlyReturnInFunction(): void {
     $scope = new DefaultScope();
-    $scope->definePHP(true, 'func', function(\DateInterval|int $a) {return $a;}); 
-    $scope->definePHP(true, 'func2', function(): ?\DateInterval {return null;});
+    $scope->definePHP(true, 'func', static fn(\DateInterval|int $a): \DateInterval|int => $a); 
+    $scope->definePHP(true, 'func2', static fn(): ?\DateInterval => null);
     $formula = new Formula('func(earlyReturnIfNull(func2()))', $scope);
     $this->expectException(ExitIfNullException::class);
     $this->assertEquals(1, $formula->calculate()->toPHPValue());

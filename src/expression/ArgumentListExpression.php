@@ -38,7 +38,7 @@ class ArgumentListExpression implements Expression, CastableExpression {
     for ($i = 0; $i < count($this->expressions); $i++) {
       $targetType = $type->getArgumentType($i);
       $actualType = $this->expressions[$i]->validate($scope);
-      $expression = OperatorExpression::castExpression($this->expressions[$i], $actualType, $targetType, $scope, $this->expressions[$i]);
+      $expression = OperatorExpression::castExpression($this->expressions[$i], $actualType, $targetType, $scope);
       $newExpressions[] = $expression;
     }
     $castedExpression = new ArgumentListExpression($newExpressions);

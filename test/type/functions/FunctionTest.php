@@ -20,15 +20,15 @@ class FunctionTest extends TestCase {
 
   public function testTruthy(): void {
     $scope = new Scope();
-    $scope->definePHP(true, 'func1', [$this,'func1']);
+    $scope->definePHP(true, 'func1', $this->func1(...));
     $formula = new Formula('func1 || false', $scope);
     $this->assertEquals(true, $formula->calculate()->toPHPValue());
   }
 
   public function testEquals(): void {
     $scope = new Scope();
-    $scope->definePHP(true, 'func1', [$this,'func1']);
-    $scope->definePHP(true, 'func2', [$this,'func2']);
+    $scope->definePHP(true, 'func1', $this->func1(...));
+    $scope->definePHP(true, 'func2', $this->func2(...));
     $formula = new Formula('func1 == func1', $scope);
     $this->assertEquals(true, $formula->calculate()->toPHPValue());
     $formula = new Formula('func1 == func2', $scope);
@@ -45,7 +45,7 @@ class FunctionTest extends TestCase {
   //   }
   public function testToString(): void {
     $scope = new Scope();
-    $scope->definePHP(true, 'func1', [$this,'func1']);
+    $scope->definePHP(true, 'func1', $this->func1(...));
     $formula = new Formula('"string "+func1', $scope);
     $this->assertEquals('string function', $formula->calculate()->toPHPValue());
   }

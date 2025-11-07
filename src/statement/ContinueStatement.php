@@ -23,7 +23,7 @@ class ContinueStatement extends Statement {
     return new StatementReturn(null, false, true);
   }
 
-  public function toString(?PrettyPrintOptions $prettyPrintOptions): string {
+  public function toString(PrettyPrintOptions $prettyPrintOptions): string {
     return 'continue;';
   }
 }

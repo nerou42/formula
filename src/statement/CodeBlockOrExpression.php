@@ -25,10 +25,10 @@ class CodeBlockOrExpression extends Statement {
   public function validateStatement(Scope $scope, ?Type $allowedReturnType = null): StatementReturnType {
     if($this->content instanceof CodeBlock) {
       return $this->content->validate($scope, $allowedReturnType);
-    } else if($this->content instanceof Expression) {
+    } elseif($this->content instanceof Expression) {
       if($allowedReturnType !== null) {
         $implicitType = $this->content->validate($scope);
-        $this->content = OperatorExpression::castExpression($this->content, $implicitType, $allowedReturnType, $scope, $this);
+        $this->content = OperatorExpression::castExpression($this->content, $implicitType, $allowedReturnType, $scope);
       }
       return new StatementReturnType($this->content->validate($scope), Frequency::ALWAYS, Frequency::ALWAYS);
     }
@@ -37,12 +37,12 @@ class CodeBlockOrExpression extends Statement {
   public function runStatement(Scope $scope): StatementReturn {
     if($this->content instanceof CodeBlock) {
       return $this->content->run($scope);
-    } else if($this->content instanceof Expression) {
+    } elseif($this->content instanceof Expression) {
       return new StatementReturn($this->content->run($scope), false, false);
     }
   }
 
-  public function toString(?PrettyPrintOptions $prettyPrintOptions): string {
+  public function toString(PrettyPrintOptions $prettyPrintOptions): string {
     return $this->content->toString($prettyPrintOptions);
   }
 

@@ -14,7 +14,7 @@ use TimoLehnertz\formula\procedure\Scope;
  */
 class ArrayAccessOperator implements ParsedOperator {
 
-  private Expression $indexExpression;
+  private readonly Expression $indexExpression;
 
   public function __construct(Expression $indexExpression) {
     $this->indexExpression = $indexExpression;

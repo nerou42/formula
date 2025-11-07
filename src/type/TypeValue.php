@@ -16,6 +16,9 @@ class TypeValue extends Value {
     $this->value = $value;
   }
 
+  /**
+   * @psalm-mutation-free
+   */
   public function getValue(): Type {
     return $this->value;
   }

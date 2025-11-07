@@ -11,9 +11,9 @@ use TimoLehnertz\formula\type\classes\FieldType;
  */
 class ArrayType extends ClassType implements IteratableType {
 
-  private Type $keyType;
+  private readonly Type $keyType;
 
-  private Type $elementsType;
+  private readonly Type $elementsType;
 
   public function __construct(Type $keyType, Type $elementsType) {
     parent::__construct(null, 'array', ['length' => new FieldType(true, new IntegerType())]);
@@ -25,8 +25,8 @@ class ArrayType extends ClassType implements IteratableType {
     if (!($type instanceof ArrayType)) {
       return false;
     }
-    $keysCompatible = $this->keyType->assignableBy($type->keyType, true) || ($type->keyType instanceof NeverType);
-    $elementsCompatible = $this->elementsType->assignableBy($type->elementsType, true) || ($type->elementsType instanceof NeverType);
+    $keysCompatible = $this->keyType->assignableBy($type->keyType) || ($type->keyType instanceof NeverType);
+    $elementsCompatible = $this->elementsType->assignableBy($type->elementsType) || ($type->elementsType instanceof NeverType);
     return $keysCompatible && $elementsCompatible;
   }
 
@@ -37,7 +37,7 @@ class ArrayType extends ClassType implements IteratableType {
     return $this->keyType->equals($type->keyType) && $this->elementsType->equals($type->elementsType);
   }
 
-  public function getIdentifier(bool $isNested = false): string {
+  public function getIdentifier(bool $nested = false): string {
     if ($this->keyType instanceof IntegerType) {
       return $this->elementsType->getIdentifier(true) . '[]';
     } else {

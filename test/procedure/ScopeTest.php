@@ -283,9 +283,7 @@ class ScopeTest extends TestCase {
   }
 
   public function testMergeArguments(): void {
-    $function = function (mixed $a) {
-      return $a;
-    };
+    $function = static fn(mixed $a): mixed => $a;
     $scope = new Scope();
     $scope->definePHP(false, 'func', $function, ['a' => new IntegerType]);
     $this->expectException(FormulaValidationException::class);
@@ -294,9 +292,7 @@ class ScopeTest extends TestCase {
   }
 
   public function testNullablePHPFunctionReturnType(): void {
-    $function = function (int $a): ?int {
-      return $a;
-    };
+    $function = static fn(int $a): ?int => $a;
     $scope = new Scope();
     $scope->definePHP(false, 'func', $function);
     $formula = new Formula("func(1)", $scope);
@@ -305,9 +301,7 @@ class ScopeTest extends TestCase {
 
   public function testDateTimeReturn(): void {
     $scope = new Scope();
-    $scope->definePHP(true, "func", function (): \DateTimeImmutable {
-      return new \DateTimeImmutable("2024-01-01");
-    });
+    $scope->definePHP(true, "func", static fn(): \DateTimeImmutable => new \DateTimeImmutable("2024-01-01"));
     $formula = new Formula('func()', $scope);
     $this->assertInstanceOf(DateTimeImmutableType::class, $formula->getReturnType());
     $this->assertEquals(new \DateTimeImmutable("2024-01-01"), $formula->calculate()->toPHPValue());
@@ -315,9 +309,7 @@ class ScopeTest extends TestCase {
 
   public function testDateIntervalReturn(): void {
     $scope = new Scope();
-    $scope->definePHP(true, "func", function (): \DateInterval {
-      return new \DateInterval("P1D");
-    });
+    $scope->definePHP(true, "func", static fn(): \DateInterval => new \DateInterval("P1D"));
     $formula = new Formula('"2024-01-01" + func()', $scope);
     $this->assertInstanceOf(DateTimeImmutableType::class, $formula->getReturnType());
     $this->assertEquals(new \DateTimeImmutable("2024-01-02"), $formula->calculate()->toPHPValue());
@@ -357,7 +349,7 @@ class PHPTestClass extends ParentClass {
 
   public readonly int $publicReadonlyInt;
 
-  private int $privateInt;
+  private readonly int $privateInt;
 
   public array $publicArray;
 

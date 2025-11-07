@@ -14,7 +14,7 @@ class CompoundTypeTest extends TestCase {
 
   public function testTruthy(): void {
     $scope = new Scope();
-    $scope->definePHP(true, 'func', [$this, 'funcTest']);
+    $scope->definePHP(true, 'func', $this->funcTest(...));
     $formula = new Formula('var a = func(); a = 0; return a;', $scope);
     $this->assertEquals(0, $formula->calculate()->toPHPValue());
   }

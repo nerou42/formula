@@ -4,7 +4,6 @@ namespace test\other;
 
 use PHPUnit\Framework\TestCase;
 use TimoLehnertz\formula\Formula;
-use TimoLehnertz\formula\FormulaBugException;
 use TimoLehnertz\formula\operator\ImplementableOperator;
 use TimoLehnertz\formula\procedure\DefaultScope;
 use TimoLehnertz\formula\procedure\Scope;
@@ -66,11 +65,10 @@ class CustomArrayType extends Type {
   }
 
   public function getTypeCompatibleOperands(ImplementableOperator $operator): array {
-    switch ($operator->getID()) {
-      case ImplementableOperator::TYPE_TYPE_CAST:
-        return [new TypeType(new ArrayType(new IntegerType(), new FloatType()))];
-    }
-    return [];
+    return match($operator->getID()) {
+      ImplementableOperator::TYPE_TYPE_CAST => [new TypeType(new ArrayType(new IntegerType(), new FloatType()))],
+      default => []
+    };
   }
 
   public function getTypeOperatorResultType(ImplementableOperator $operator, ?Type $otherType): ?Type {

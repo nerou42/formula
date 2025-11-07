@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Rector\Config\RectorConfig;
 use Rector\ValueObject\PhpVersion;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
+use Rector\Php81\Rector\ClassMethod\NewInInitializerRector;
 use Rector\Set\ValueObject\LevelSetList;
 
 return static function (RectorConfig $rectorConfig): void {
@@ -19,6 +20,7 @@ return static function (RectorConfig $rectorConfig): void {
   ]);
   
   $rectorConfig->skip([
-    ClassPropertyAssignToConstructorPromotionRector::class
+    ClassPropertyAssignToConstructorPromotionRector::class,
+    NewInInitializerRector::class
   ]);
 };

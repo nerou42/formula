@@ -10,7 +10,7 @@ use TimoLehnertz\formula\operator\ImplementableOperator;
  */
 class MemberAccsessValue extends Value {
 
-  private string $memberIdentifier;
+  private readonly string $memberIdentifier;
 
   public function __construct(string $memberIdentifier) {
     $this->memberIdentifier = $memberIdentifier;

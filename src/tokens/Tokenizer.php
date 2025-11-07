@@ -33,7 +33,7 @@ class Tokenizer {
     $numberHasDot = false;
     $tokenStartLine = 0;
     $tokenSource = '';
-    $addedToken = function () use (&$keyword, &$singleToken, &$mode, &$buffer, &$stringBoundry, &$numberHasDot, &$firstToken, &$lastToken, &$lastStartPosition, &$position, &$tokenStartLine, &$line, &$tokenSource) {
+    $addedToken = function() use(&$keyword, &$singleToken, &$mode, &$buffer, &$stringBoundry, &$numberHasDot, &$firstToken, &$lastToken, &$lastStartPosition, &$position, &$tokenStartLine, &$line, &$tokenSource): void {
       $keyword = null;
       $singleToken = null;
       $mode = "normal";

@@ -10,18 +10,23 @@ use TimoLehnertz\formula\operator\ImplementableOperator;
 class CompoundType extends Type {
 
   /**
-   * @var array<Type>
+   * @var Type[]
+   * @psalm-var non-empty-array<array-key, Type>
    */
   private readonly array $types;
 
   /**
-   * @param array<Type> $types
+   * @param Type[] $types
+   * @psalm-param non-empty-array<array-key, Type> $types
    */
   private function __construct(array $types) {
     parent::__construct();
     $this->types = $types;
   }
 
+  /**
+   * @param Type[] $types
+   */
   public static function buildFromTypes(array $types): Type {
     if(count($types) === 0) {
       return new NeverType();
@@ -58,13 +63,12 @@ class CompoundType extends Type {
 
   protected function getTypeCompatibleOperands(ImplementableOperator $operator): array {
     $operandLists = [];
-    /** @var Type $type */
     foreach($this->types as $type) {
       $operandLists[] = $type->getCompatibleOperands($operator);
     }
     $intersection = $operandLists[0];
     foreach ($operandLists as $list) {
-      $intersection = array_uintersect($intersection, $list, function(Type $a, Type $b) {return $a->equals($b) ? 0 : -1;});
+      $intersection = array_uintersect($intersection, $list, static fn(Type $a, Type $b): int => $a->equals($b) ? 0 : -1);
     }
     return $intersection;
   }
@@ -104,7 +108,7 @@ class CompoundType extends Type {
       return true;
     } else {
       foreach($this->types as $ownType) {
-        if($ownType->assignableBy($type, true)) {
+        if($ownType->assignableBy($type)) {
           return true;
         }
       }

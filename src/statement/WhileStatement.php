@@ -12,9 +12,9 @@ use TimoLehnertz\formula\type\Type;
  */
 class WhileStatement extends Statement {
 
-  private Expression $condition;
+  private readonly Expression $condition;
 
-  private CodeBlock $body;
+  private readonly CodeBlock $body;
 
   public function __construct(Expression $condition, CodeBlock $body) {
     parent::__construct();
@@ -41,7 +41,7 @@ class WhileStatement extends Statement {
     return new StatementReturn(null, false, false);
   }
 
-  public function toString(?PrettyPrintOptions $prettyPrintOptions): string {
+  public function toString(PrettyPrintOptions $prettyPrintOptions): string {
     return 'while ('.$this->condition->toString($prettyPrintOptions).') '.$this->body->toString($prettyPrintOptions);
   }
 }

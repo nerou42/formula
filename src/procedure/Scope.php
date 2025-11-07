@@ -77,32 +77,20 @@ class Scope {
     }
     if ($reflectionType instanceof \ReflectionNamedType) {
       if ($reflectionType->isBuiltin()) {
-        switch ($reflectionType->getName()) {
-          case 'string':
-            return self::setNullable(new StringType(), $reflectionType->allowsNull());
-          case 'int':
-            return self::setNullable(new IntegerType(), $reflectionType->allowsNull());
-          case 'float':
-            return self::setNullable(new FloatType(), $reflectionType->allowsNull());
-          case 'bool':
-            return self::setNullable(new BooleanType(), $reflectionType->allowsNull());
-          case 'array':
-            return self::setNullable(new ArrayType(new MixedType(), new MixedType()), $reflectionType->allowsNull());
-          case 'mixed':
-            return self::setNullable(new MixedType(), $reflectionType->allowsNull());
-          case 'void':
-            return self::setNullable(new VoidType(), $reflectionType->allowsNull());
-          case 'object':
-            return self::setNullable(new MixedType(), $reflectionType->allowsNull());
-          case 'callable':
-            return self::setNullable(new FunctionType(new OuterFunctionArgumentListType([new OuterFunctionArgument(new MixedType(), true, false)], true), new MixedType()), $reflectionType->allowsNull());
-          case 'null':
-            return self::setNullable(new NullType(), $reflectionType->allowsNull());
-          case 'never':
-            return self::setNullable(new NeverType(), $reflectionType->allowsNull());
-          default:
-            throw new FormulaBugException('Unsupported inbuilt type ' . $reflectionType->getName());
-        }
+        return match($reflectionType->getName()) {
+          'string' => self::setNullable(new StringType(), $reflectionType->allowsNull()),
+          'int' => self::setNullable(new IntegerType(), $reflectionType->allowsNull()),
+          'float' => self::setNullable(new FloatType(), $reflectionType->allowsNull()),
+          'bool' => self::setNullable(new BooleanType(), $reflectionType->allowsNull()),
+          'array' => self::setNullable(new ArrayType(new MixedType(), new MixedType()), $reflectionType->allowsNull()),
+          'mixed' => self::setNullable(new MixedType(), $reflectionType->allowsNull()),
+          'void' => self::setNullable(new VoidType(), $reflectionType->allowsNull()),
+          'object' => self::setNullable(new MixedType(), $reflectionType->allowsNull()),
+          'callable' => self::setNullable(new FunctionType(new OuterFunctionArgumentListType([new OuterFunctionArgument(new MixedType(), true, false)], true), new MixedType()), $reflectionType->allowsNull()),
+          'null' => self::setNullable(new NullType(), $reflectionType->allowsNull()),
+          'never' => self::setNullable(new NeverType(), $reflectionType->allowsNull()),
+          default => throw new FormulaBugException('Unsupported inbuilt type ' . $reflectionType->getName())
+        };
       } else if (enum_exists($reflectionType->getName())) {
         return self::setNullable(new EnumInstanceType(new EnumTypeType(new \ReflectionEnum($reflectionType->getName()))), $reflectionType->allowsNull());
       } else if (class_exists($reflectionType->getName())) {
@@ -188,7 +176,6 @@ class Scope {
 
   /**
    * @param OuterFunctionArgumentListType|array<string, Type>|null|null $argumentType
-   * @param ?callable(OuterFunctionArgumentListType): ?Type $specificFunctionReturnType
    */
   private static function reflectionFunctionToType(\ReflectionFunctionAbstract $reflection, OuterFunctionArgumentListType|array|null $argumentType = null, ?Type $generalReturnType = null, ?SpecificReturnType $specificFunctionReturnType = null): FunctionType {
     $reflectionReturnType = $reflection->getReturnType();
@@ -271,7 +258,6 @@ class Scope {
 
   /**
    * @param OuterFunctionArgumentListType|array<string, Type>|null|null $argumentType
-   * @param ?callable(OuterFunctionArgumentListType): ?Type $specificFunctionReturnType
    * @return array [Type, Value]
    */
   public static function convertPHPVar(mixed $value, bool $onlyValue = false, OuterFunctionArgumentListType|array|null $argumentType = null, ?Type $generalReturnType = null, ?SpecificReturnType $specificFunctionReturnType = null): array {
@@ -404,7 +390,7 @@ class Scope {
   }
 
   /**
-   * @psalm-return array<string, @psalm-return array{
+   * @psalm-return array<string, array{
    *   typeName: string,
    *   properties?: array<string, mixed>
    * }>

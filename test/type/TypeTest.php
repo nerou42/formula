@@ -310,12 +310,8 @@ class TypeTest extends TestCase {
     $operators[] = new OperatorTestMeta(ImplementableOperator::TYPE_CALL, $compatibleOperands);
 
     $args = new OuterFunctionArgumentListType([], false);
-    $functionValue = new FunctionValue(new PHPFunctionBody(function () {
-      return 0;
-    }, true, new RuntimeFunctionArgsData()));
-    $functionValue2 = new FunctionValue(new PHPFunctionBody(function () {
-      return 0;
-    }, true, new RuntimeFunctionArgsData()));
+    $functionValue = new FunctionValue(new PHPFunctionBody(static fn(): int => 0, true, new RuntimeFunctionArgsData()));
+    $functionValue2 = new FunctionValue(new PHPFunctionBody(static fn(): int => 0, true, new RuntimeFunctionArgsData()));
     $tests[] = ['callable', new FunctionType($args, new VoidType()), new FunctionType($args, new VoidType()), new DateTimeImmutableType(), new FunctionType($args, new VoidType()), new FunctionType($args, new IntegerType()), 'function() -> void', $operators, $functionValue, 'function', true, $functionValue, $functionValue2, true];
 
     /**
@@ -377,9 +373,7 @@ class TypeTest extends TestCase {
      * ClassTypeType
      */
     $classTypeType = new ClassTypeType(new ConstructorType(new OuterFunctionArgumentListType([], false), $classType));
-    $constructor = new ConstructorValue(new PHPFunctionBody(function () {
-      return new IntegerValue(1);
-    }, false, new RuntimeFunctionArgsData()));
+    $constructor = new ConstructorValue(new PHPFunctionBody(static fn(): IntegerValue => new IntegerValue(1), false, new RuntimeFunctionArgsData()));
     $classTypeValue = new ClassTypeValue($constructor);
     $constructorType = new ConstructorType(new OuterFunctionArgumentListType([], false), $classType);
     $operators = [];
@@ -420,8 +414,7 @@ class TypeTest extends TestCase {
         try {
           $testValue->toPHPValue();
           $this->fail('Expected exception');
-        } catch (\Exception $e) {
-        }
+        } catch (\Exception) {}
       } else if ($phpValue === 'callable') {
         $this->assertTrue(is_callable($testValue->toPHPValue()));
       } else if ($phpValue === 'DateInterval') {
@@ -464,7 +457,7 @@ class TypeTest extends TestCase {
             try {
               $testValue->operate($operatorMeta->operator, null);
               $this->fail('Expected FormulaBugException');
-            } catch (FormulaBugException $e) {
+            } catch (FormulaBugException) {
               $this->once();
             }
             //             try {
@@ -493,8 +486,7 @@ class TypeTest extends TestCase {
       try {
         $testValue->operate(new ImplementableOperator(ImplementableOperator::TYPE_SCOPE_RESOLUTION), null);
         $this->fail('Expected FormulaBugException');
-      } catch (FormulaBugException $e) {
-      }
+      } catch (FormulaBugException) {}
     }
   }
 }

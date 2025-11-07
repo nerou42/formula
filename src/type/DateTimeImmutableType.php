@@ -18,18 +18,14 @@ class DateTimeImmutableType extends Type {
   }
 
   protected function getTypeCompatibleOperands(ImplementableOperator $operator): array {
-    switch ($operator->getID()) {
-      case ImplementableOperator::TYPE_ADDITION:
-      case ImplementableOperator::TYPE_SUBTRACTION:
-        return [new DateIntervalType()];
-        case ImplementableOperator::TYPE_GREATER:
-        case ImplementableOperator::TYPE_LESS:
-        return [new DateTimeImmutableType()];
-      case ImplementableOperator::TYPE_TYPE_CAST:
-        return [new TypeType(new IntegerType())];
-      default:
-        return [];
-    }
+    return match($operator->getID()) {
+      ImplementableOperator::TYPE_ADDITION,
+      ImplementableOperator::TYPE_SUBTRACTION => [new DateIntervalType()],
+      ImplementableOperator::TYPE_GREATER,
+      ImplementableOperator::TYPE_LESS => [new DateTimeImmutableType()],
+      ImplementableOperator::TYPE_TYPE_CAST => [new TypeType(new IntegerType())],
+      default => []
+    };
   }
 
   protected function getTypeOperatorResultType(ImplementableOperator $operator, ?Type $otherType): ?Type {

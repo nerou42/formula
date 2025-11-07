@@ -23,7 +23,7 @@ class FunctionStatement extends Statement {
 
   private readonly CodeBlock $codeBlock;
 
-  private FunctionType $functionType;
+  private ?FunctionType $functionType = null;
 
   public function __construct(Type $returnType, string $identifier, InnerFunctionArgumentList $arguments, CodeBlock $codeBlock) {
     parent::__construct();
@@ -49,7 +49,7 @@ class FunctionStatement extends Statement {
     return new StatementReturn(null, false, false);
   }
 
-  public function toString(?PrettyPrintOptions $prettyPrintOptions): string {
+  public function toString(PrettyPrintOptions $prettyPrintOptions): string {
     $functionBody = new FormulaFunctionBody($this->arguments, $this->codeBlock, new Scope());
     return $this->functionType->generalReturnType->getIdentifier().' '.$this->identifier.$functionBody->toString($prettyPrintOptions);
   }

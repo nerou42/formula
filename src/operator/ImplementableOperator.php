@@ -60,100 +60,69 @@ class ImplementableOperator implements FormulaPart {
   }
 
   private static function idToOperatorType(int $id): OperatorType {
-    switch ($id) {
-      case ImplementableOperator::TYPE_ADDITION:
-      case ImplementableOperator::TYPE_SUBTRACTION:
-      case ImplementableOperator::TYPE_MULTIPLICATION:
-      case ImplementableOperator::TYPE_DIVISION:
-      case ImplementableOperator::TYPE_MODULO:
-      case ImplementableOperator::TYPE_EQUALS:
-      case ImplementableOperator::TYPE_GREATER:
-      case ImplementableOperator::TYPE_LESS:
-      case ImplementableOperator::TYPE_LOGICAL_AND:
-      case ImplementableOperator::TYPE_DIRECT_ASSIGNMENT:
-      case ImplementableOperator::TYPE_DIRECT_ASSIGNMENT_OLD_VAL:
-      case ImplementableOperator::TYPE_MEMBER_ACCESS:
-      case ImplementableOperator::TYPE_SCOPE_RESOLUTION:
-      case ImplementableOperator::TYPE_LOGICAL_XOR:
-      case ImplementableOperator::TYPE_INSTANCEOF:
-      case ImplementableOperator::TYPE_LOGICAL_OR:
-      case ImplementableOperator::TYPE_CALL:
-      case ImplementableOperator::TYPE_TYPE_CAST:
-      case ImplementableOperator::TYPE_ARRAY_ACCESS:
-      case ImplementableOperator::TYPE_BITWISE_AND:
-      case ImplementableOperator::TYPE_BITWISE_OR:
-      case ImplementableOperator::TYPE_LEFT_SHIFT:
-      case ImplementableOperator::TYPE_RIGHT_SHIFT:
-        return OperatorType::InfixOperator;
-      case ImplementableOperator::TYPE_NEW:
-      case ImplementableOperator::TYPE_UNARY_PLUS:
-      case ImplementableOperator::TYPE_UNARY_MINUS:
-      case ImplementableOperator::TYPE_LOGICAL_NOT:
-        return OperatorType::PrefixOperator;
-      default:
-        throw new FormulaException('Invalid ImplementableOperator ID ' . $id);
-    }
+    return match($id) {
+      ImplementableOperator::TYPE_ADDITION,
+      ImplementableOperator::TYPE_SUBTRACTION,
+      ImplementableOperator::TYPE_MULTIPLICATION,
+      ImplementableOperator::TYPE_DIVISION,
+      ImplementableOperator::TYPE_MODULO,
+      ImplementableOperator::TYPE_EQUALS,
+      ImplementableOperator::TYPE_GREATER,
+      ImplementableOperator::TYPE_LESS,
+      ImplementableOperator::TYPE_LOGICAL_AND,
+      ImplementableOperator::TYPE_DIRECT_ASSIGNMENT,
+      ImplementableOperator::TYPE_DIRECT_ASSIGNMENT_OLD_VAL,
+      ImplementableOperator::TYPE_MEMBER_ACCESS,
+      ImplementableOperator::TYPE_SCOPE_RESOLUTION,
+      ImplementableOperator::TYPE_LOGICAL_XOR,
+      ImplementableOperator::TYPE_INSTANCEOF,
+      ImplementableOperator::TYPE_LOGICAL_OR,
+      ImplementableOperator::TYPE_CALL,
+      ImplementableOperator::TYPE_TYPE_CAST,
+      ImplementableOperator::TYPE_ARRAY_ACCESS,
+      ImplementableOperator::TYPE_BITWISE_AND,
+      ImplementableOperator::TYPE_BITWISE_OR,
+      ImplementableOperator::TYPE_LEFT_SHIFT,
+      ImplementableOperator::TYPE_RIGHT_SHIFT => OperatorType::InfixOperator,
+      ImplementableOperator::TYPE_NEW,
+      ImplementableOperator::TYPE_UNARY_PLUS,
+      ImplementableOperator::TYPE_UNARY_MINUS,
+      ImplementableOperator::TYPE_LOGICAL_NOT => OperatorType::PrefixOperator,
+      default => throw new FormulaException('Invalid ImplementableOperator ID ' . $id)
+    };
   }
 
   private static function idToIdentifier(int $id): string {
-    switch ($id) {
-      case ImplementableOperator::TYPE_SCOPE_RESOLUTION:
-        return '::';
-      case ImplementableOperator::TYPE_MEMBER_ACCESS:
-        return '.';
-      case ImplementableOperator::TYPE_UNARY_PLUS:
-        return '+';
-      case ImplementableOperator::TYPE_UNARY_MINUS:
-        return '-';
-      case ImplementableOperator::TYPE_LOGICAL_NOT:
-        return '!';
-      case ImplementableOperator::TYPE_NEW:
-        return 'new';
-      case ImplementableOperator::TYPE_INSTANCEOF:
-        return 'instanceof';
-      case ImplementableOperator::TYPE_MULTIPLICATION:
-        return '*';
-      case ImplementableOperator::TYPE_DIVISION:
-        return '/';
-      case ImplementableOperator::TYPE_MODULO:
-        return '%';
-      case ImplementableOperator::TYPE_ADDITION:
-        return '+';
-      case ImplementableOperator::TYPE_SUBTRACTION:
-        return '-';
-      case ImplementableOperator::TYPE_GREATER:
-        return '>';
-      case ImplementableOperator::TYPE_LESS:
-        return '<';
-      case ImplementableOperator::TYPE_EQUALS:
-        return '==';
-      case ImplementableOperator::TYPE_LOGICAL_AND:
-        return '&&';
-      case ImplementableOperator::TYPE_LOGICAL_OR:
-        return '||';
-      case ImplementableOperator::TYPE_LOGICAL_XOR:
-        return '^';
-      case ImplementableOperator::TYPE_DIRECT_ASSIGNMENT:
-        return '=';
-      case ImplementableOperator::TYPE_DIRECT_ASSIGNMENT_OLD_VAL:
-        return '=';
-      case ImplementableOperator::TYPE_TYPE_CAST:
-        return 'typecast';
-      case ImplementableOperator::TYPE_ARRAY_ACCESS:
-        return '[]';
-      case ImplementableOperator::TYPE_CALL:
-        return '()';
-      case ImplementableOperator::TYPE_BITWISE_AND:
-        return '&';
-      case ImplementableOperator::TYPE_BITWISE_OR:
-        return '|';
-      case ImplementableOperator::TYPE_LEFT_SHIFT:
-        return '<<';
-      case ImplementableOperator::TYPE_RIGHT_SHIFT:
-        return '>>';
-      default:
-        throw new FormulaException('Invalid ImplementableOperator ID ' . $id);
-    }
+    return match($id) {
+      ImplementableOperator::TYPE_SCOPE_RESOLUTION => '::',
+      ImplementableOperator::TYPE_MEMBER_ACCESS => '.',
+      ImplementableOperator::TYPE_UNARY_PLUS => '+',
+      ImplementableOperator::TYPE_UNARY_MINUS => '-',
+      ImplementableOperator::TYPE_LOGICAL_NOT => '!',
+      ImplementableOperator::TYPE_NEW => 'new',
+      ImplementableOperator::TYPE_INSTANCEOF => 'instanceof',
+      ImplementableOperator::TYPE_MULTIPLICATION => '*',
+      ImplementableOperator::TYPE_DIVISION => '/',
+      ImplementableOperator::TYPE_MODULO => '%',
+      ImplementableOperator::TYPE_ADDITION => '+',
+      ImplementableOperator::TYPE_SUBTRACTION => '-',
+      ImplementableOperator::TYPE_GREATER => '>',
+      ImplementableOperator::TYPE_LESS => '<',
+      ImplementableOperator::TYPE_EQUALS => '==',
+      ImplementableOperator::TYPE_LOGICAL_AND => '&&',
+      ImplementableOperator::TYPE_LOGICAL_OR => '||',
+      ImplementableOperator::TYPE_LOGICAL_XOR => '^',
+      ImplementableOperator::TYPE_DIRECT_ASSIGNMENT => '=',
+      ImplementableOperator::TYPE_DIRECT_ASSIGNMENT_OLD_VAL => '=',
+      ImplementableOperator::TYPE_TYPE_CAST => 'typecast',
+      ImplementableOperator::TYPE_ARRAY_ACCESS => '[]',
+      ImplementableOperator::TYPE_CALL => '()',
+      ImplementableOperator::TYPE_BITWISE_AND => '&',
+      ImplementableOperator::TYPE_BITWISE_OR => '|',
+      ImplementableOperator::TYPE_LEFT_SHIFT => '<<',
+      ImplementableOperator::TYPE_RIGHT_SHIFT => '>>',
+      default => throw new FormulaException('Invalid ImplementableOperator ID ' . $id)
+    };
   }
 
   public function getOperatorType(): OperatorType {

@@ -12,13 +12,13 @@ use TimoLehnertz\formula\type\Type;
  */
 class ForStatement extends Statement {
 
-  private ?VariableDeclarationStatement $declarationStatement;
+  private readonly ?VariableDeclarationStatement $declarationStatement;
 
-  private ?Expression $condition;
+  private readonly ?Expression $condition;
 
-  private ?Expression $incrementExpression;
+  private readonly ?Expression $incrementExpression;
 
-  private CodeBlock $body;
+  private readonly CodeBlock $body;
 
   public function __construct(?VariableDeclarationStatement $declarationStatement, ?Expression $condition, ?Expression $incrementExpression, CodeBlock $body) {
     parent::__construct();
@@ -51,7 +51,7 @@ class ForStatement extends Statement {
     return new StatementReturn(null, false, false);
   }
 
-  public function toString(?PrettyPrintOptions $prettyPrintOptions): string {
+  public function toString(PrettyPrintOptions $prettyPrintOptions): string {
     return 'for ('.($this->declarationStatement?->toString($prettyPrintOptions) ?? '; ').($this->condition?->toString($prettyPrintOptions) ?? '').';'.($this->incrementExpression?->toString($prettyPrintOptions) ?? '').') '.$this->body->toString($prettyPrintOptions);
   }
 }

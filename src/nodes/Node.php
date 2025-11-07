@@ -17,7 +17,7 @@ class Node {
   public readonly array $info;
 
   /**
-   * @param array<int, Node> $connectedInputs
+   * @param array<int, Node> $connected
    */
   public function __construct(string $nodeType, array $connected, array $info = []) {
     foreach ($connected as $node) {

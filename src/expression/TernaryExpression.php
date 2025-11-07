@@ -30,7 +30,7 @@ class TernaryExpression implements Expression {
     $this->condition->validate($scope);
     $leftType = $this->leftExpression->validate($scope);
     $rightType = $this->rightExpression->validate($scope);
-    return CompoundType::buildFromTypes([$leftType,$rightType], true);
+    return CompoundType::buildFromTypes([$leftType, $rightType]);
   }
 
   public function run(Scope $scope): Value {

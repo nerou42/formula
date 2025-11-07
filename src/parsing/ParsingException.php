@@ -57,35 +57,24 @@ class ParsingException extends FormulaException {
     parent::__construct($message);
   }
 
-  public static function setParser(Parser $currentParser, Token $currentToken) {
+  public static function setParser(Parser $currentParser, Token $currentToken): void {
     ParsingException::$currentParser = $currentParser;
     ParsingException::$currentToken = $currentToken;
   }
 
   private static function codeToMessage(int $parsingErrorCode): string {
-    switch ($parsingErrorCode) {
-      case static::ERROR_UNEXPECTED_END_OF_INPUT:
-        return 'Unexpected end of input';
-      case static::ERROR_TOO_MANY_DELIMITERS:
-        return 'Too many delimiters';
-      case static::ERROR_MISSING_DELIMITERS:
-        return 'Missing delimiter';
-      case static::ERROR_INVALID_TYPE:
-        return 'Invalid type';
-      case static::ERROR_INVALID_OPERATOR_USE:
-        return 'Invalid use of operator';
-      case static::ERROR_EXPECTED_EOF:
-        return 'Expected ond of file';
-      case static::ERROR_INCOMPLETE_TERNARY:
-        return 'Incomplete ternary expression';
-      case static::ERROR_UNEXPECTED_TOKEN:
-        return 'Unexpected token';
-      case static::ERROR_TOO_MANY_ELSE:
-        return 'Else block can\'t follow else block';
-      case static::ERROR_VARG_NOT_LAST:
-        return 'Varg argument must be last';
-      default:
-        throw new \UnexpectedValueException($parsingErrorCode . ' is no valid ParsingErrorCode');
-    }
+    return match($parsingErrorCode) {
+      static::ERROR_UNEXPECTED_END_OF_INPUT => 'Unexpected end of input',
+      static::ERROR_TOO_MANY_DELIMITERS => 'Too many delimiters',
+      static::ERROR_MISSING_DELIMITERS => 'Missing delimiter',
+      static::ERROR_INVALID_TYPE => 'Invalid type',
+      static::ERROR_INVALID_OPERATOR_USE => 'Invalid use of operator',
+      static::ERROR_EXPECTED_EOF => 'Expected ond of file',
+      static::ERROR_INCOMPLETE_TERNARY => 'Incomplete ternary expression',
+      static::ERROR_UNEXPECTED_TOKEN => 'Unexpected token',
+      static::ERROR_TOO_MANY_ELSE => 'Else block can\'t follow else block',
+      static::ERROR_VARG_NOT_LAST => 'Varg argument must be last',
+      default => throw new \UnexpectedValueException($parsingErrorCode . ' is no valid ParsingErrorCode')
+    };
   }
 }

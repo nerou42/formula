@@ -30,7 +30,7 @@ class StringType extends ClassType {
 
   protected function getTypeCompatibleOperands(ImplementableOperator $operator): array {
     if($operator->getID() === ImplementableOperator::TYPE_ADDITION) {
-      return [new StringType(false)];
+      return [new self()];
     } else {
       return parent::getTypeCompatibleOperands($operator);
     }
@@ -38,7 +38,7 @@ class StringType extends ClassType {
 
   protected function getTypeOperatorResultType(ImplementableOperator $operator, ?Type $otherType): ?Type {
     if($operator->getID() === ImplementableOperator::TYPE_ADDITION && $otherType instanceof StringType) {
-      return new StringType(false);
+      return new self();
     } else {
       return parent::getTypeOperatorResultType($operator, $otherType);
     }

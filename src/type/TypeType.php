@@ -16,6 +16,9 @@ class TypeType extends Type {
     $this->type = $type;
   }
 
+  /**
+   * @psalm-mutation-free
+   */
   public function getType(): Type {
     return $this->type;
   }

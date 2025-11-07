@@ -29,7 +29,7 @@ class ForStatementParser extends Parser {
     try {
       $parsedDeclaration = (new VariableDeclarationStatementParser())->parse($token);
       $token = $parsedDeclaration->nextToken;
-    } catch(ParsingSkippedException $e) {
+    } catch(ParsingSkippedException) {
       if($token->id !== Token::SEMICOLON) {
         throw new ParsingException(ParsingException::ERROR_UNEXPECTED_TOKEN, $firstToken, 'Expected ;');
       }
@@ -45,7 +45,7 @@ class ForStatementParser extends Parser {
     try {
       $parsedCondition = (new ExpressionParser())->parse($token);
       $token = $parsedCondition->nextToken;
-    } catch(ParsingSkippedException $e) {}
+    } catch(ParsingSkippedException) {}
     if($token === null) {
       throw new ParsingException(ParsingException::ERROR_UNEXPECTED_END_OF_INPUT);
     }
@@ -66,7 +66,7 @@ class ForStatementParser extends Parser {
       if($token === null) {
         throw new ParsingException(ParsingException::ERROR_UNEXPECTED_END_OF_INPUT);
       }
-    } catch(ParsingSkippedException $e) {}
+    } catch(ParsingSkippedException) {}
     if($token->id !== Token::BRACKETS_CLOSED) {
       throw new ParsingException(ParsingException::ERROR_UNEXPECTED_TOKEN, $firstToken, 'Expected )');
     }

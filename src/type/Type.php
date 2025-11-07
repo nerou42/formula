@@ -116,7 +116,7 @@ abstract class Type implements OperatorMeta, FormulaPart {
         foreach ($this->restrictedValues as $value) {
           try {
             $restrictedValues[] = $value->operate($operator, null);
-          } catch (FormulaRuntimeException $e) { // catch division by zero and similar
+          } catch (FormulaRuntimeException) { // catch division by zero and similar
             $restrictedValues = null;
             break;
           }
@@ -194,7 +194,7 @@ abstract class Type implements OperatorMeta, FormulaPart {
    * }
    */
   public function getInterfaceType(): array {
-    $reflection = new \ReflectionClass($this::class);
+    $reflection = new \ReflectionClass(static::class);
     $properties = $this->getProperties();
     if ($properties === null) {
       return ['typeName' => $reflection->getShortName()];

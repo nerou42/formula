@@ -78,7 +78,7 @@ class FunctionParser extends Parser {
     if (!$this->parseStatement) {
       try {
         $parsedCodeBlock = (new ExpressionFunctionBodyParser())->parse($token);
-      } catch (ParsingSkippedException $e) {
+      } catch (ParsingSkippedException) {
         $parsedCodeBlock = (new CodeBlockParser(false, false))->parse($token);
         if ($parsedReturnType === null) {
           throw new ParsingException(ParsingException::ERROR_UNEXPECTED_TOKEN, $token, 'Function requires return type');

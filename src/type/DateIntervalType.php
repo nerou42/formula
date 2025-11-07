@@ -18,11 +18,10 @@ class DateIntervalType extends Type {
   }
 
   protected function getTypeCompatibleOperands(ImplementableOperator $operator): array {
-    switch ($operator->getID()) {
-      case ImplementableOperator::TYPE_TYPE_CAST:
-        return [new TypeType(new IntegerType())];
-    }
-    return [];
+    return match($operator->getID()) {
+      ImplementableOperator::TYPE_TYPE_CAST => [new TypeType(new IntegerType())],
+      default => []
+    };
   }
 
   public function getIdentifier(bool $nested = false): string {

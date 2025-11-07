@@ -58,7 +58,7 @@ class ClassType extends Type {
     return $this->identifier === $type->identifier;
   }
 
-  public function getIdentifier(bool $isNested = false): string {
+  public function getIdentifier(bool $nested = false): string {
     return 'classType('.$this->identifier.')';
   }
 

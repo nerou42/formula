@@ -9,7 +9,7 @@ use TimoLehnertz\formula\operator\ImplementableOperator;
  */
 class MemberAccsessType extends Type {
 
-  private string $memberIdentifier;
+  private readonly string $memberIdentifier;
 
   public function __construct(string $memberIdentifier) {
     parent::__construct([new MemberAccsessValue($memberIdentifier)]);
@@ -28,7 +28,7 @@ class MemberAccsessType extends Type {
     return ($type instanceof MemberAccsessType) && $type->memberIdentifier === $this->memberIdentifier;
   }
 
-  public function getIdentifier(bool $isNested = false): string {
+  public function getIdentifier(bool $nested = false): string {
     return 'MemberAccsessType('.$this->memberIdentifier.')';
   }
 

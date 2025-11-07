@@ -12,9 +12,9 @@ use TimoLehnertz\formula\type\Type;
  */
 class DoWhileStatement extends Statement {
 
-  private CodeBlock $body;
+  private readonly CodeBlock $body;
 
-  private Expression $condition;
+  private readonly Expression $condition;
 
   public function __construct(CodeBlock $body, Expression $condition) {
     parent::__construct();
@@ -40,7 +40,7 @@ class DoWhileStatement extends Statement {
     return new StatementReturn(null, false, false);
   }
 
-  public function toString(?PrettyPrintOptions $prettyPrintOptions): string {
+  public function toString(PrettyPrintOptions $prettyPrintOptions): string {
     return 'do '.$this->body->toString($prettyPrintOptions).' while('.$this->condition->toString($prettyPrintOptions).');';
   }
 }

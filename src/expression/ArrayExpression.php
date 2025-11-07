@@ -34,7 +34,7 @@ class ArrayExpression implements Expression {
       $types[] = $expression->validate($scope);
     }
     $elementType = CompoundType::buildFromTypes($types);
-    $this->arrayType = new ArrayType(new IntegerType(true), $elementType);
+    $this->arrayType = new ArrayType(new IntegerType(), $elementType);
     return $this->arrayType;
   }
 
@@ -43,7 +43,7 @@ class ArrayExpression implements Expression {
     foreach($this->expressions as $expression) {
       $values[] = $expression->run($scope);
     }
-    return new ArrayValue($values, $this->arrayType);
+    return new ArrayValue($values);
   }
 
   public function toString(PrettyPrintOptions $prettyPrintOptions): string {

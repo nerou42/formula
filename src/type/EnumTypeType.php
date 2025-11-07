@@ -28,7 +28,7 @@ class EnumTypeType extends ClassType {
     return $this->equals($type);
   }
 
-  public function getIdentifier(bool $isNested = false): string {
+  public function getIdentifier(bool $nested = false): string {
     return 'EnumTypeType(' . $this->reflection->getName() . ')';
   }
 }

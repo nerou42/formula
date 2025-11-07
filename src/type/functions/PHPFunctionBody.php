@@ -12,7 +12,7 @@ use TimoLehnertz\formula\type\VoidValue;
 class PHPFunctionBody implements FunctionBody {
 
   /**
-   * @var callable
+   * @var callable(mixed...):mixed
    */
   private readonly mixed $callable;
 
@@ -23,24 +23,27 @@ class PHPFunctionBody implements FunctionBody {
    */
   private readonly bool $voidFunction;
 
+  /**
+   * @param callable(mixed...):mixed $callable
+   */
   public function __construct(callable $callable, bool $voidFunction, RuntimeFunctionArgsData $runtimeData) {
     $this->callable = $callable;
     $this->voidFunction = $voidFunction;
     $this->runtimeData = $runtimeData;
   }
 
-  public function call(OuterFunctionArgumentListValue $argList): Value {
-    $args = [];
-    for($i = 0;$i < count($argList->getValues());$i++) {
+  public function call(OuterFunctionArgumentListValue $args): Value {
+    $argList = [];
+    for($i = 0;$i < count($args->getValues());$i++) {
       /** @var Value $argValue */
-      $argValue = $argList->getValues()[$i];
+      $argValue = $args->getValues()[$i];
       if($this->runtimeData->argAcceptsValue($i)) {
-        $args[$i] = $argValue;
+        $argList[$i] = $argValue;
       } else {
-        $args[$i] = $argValue->toPHPValue();
+        $argList[$i] = $argValue->toPHPValue();
       }
     }
-    $phpReturn = call_user_func_array($this->callable, $args);
+    $phpReturn = call_user_func_array($this->callable, $argList);
     if(!$this->voidFunction) {
       return Scope::convertPHPVar($phpReturn, true)[1];
     } else {

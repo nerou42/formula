@@ -110,9 +110,8 @@ abstract class NumberValueHelper {
       case ImplementableOperator::TYPE_LEFT_SHIFT:
       case ImplementableOperator::TYPE_RIGHT_SHIFT:
         return $typeA instanceof IntegerType ? new IntegerType() : null;
-      default:
-        return null;
     }
+    return null;
   }
 
   public static function numberOperate(IntegerValue|FloatValue $self, ImplementableOperator $operator, ?Value $other): Value {

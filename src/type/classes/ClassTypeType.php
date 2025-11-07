@@ -2,10 +2,8 @@
 declare(strict_types = 1);
 namespace TimoLehnertz\formula\type\classes;
 
-use TimoLehnertz\formula\nodes\NodeInterfaceType;
 use TimoLehnertz\formula\operator\ImplementableOperator;
 use TimoLehnertz\formula\type\Type;
-use TimoLehnertz\formula\NodesNotSupportedException;
 
 /**
  * @author Timo Lehnertz
@@ -42,11 +40,10 @@ class ClassTypeType extends Type {
   }
 
   protected function getTypeOperatorResultType(ImplementableOperator $operator, ?Type $otherType): ?Type {
-    switch($operator->getID()) {
-      case ImplementableOperator::TYPE_NEW:
-        return $this->constructorType;
-    }
-    return null;
+    return match($operator->getID()) {
+      ImplementableOperator::TYPE_NEW => $this->constructorType,
+      default => null
+    };
   }
 
   protected function getProperties(): ?array {

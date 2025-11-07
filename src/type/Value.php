@@ -40,7 +40,7 @@ abstract class Value implements OperatorHandler {
             if ($other->getValue() instanceof BooleanType) {
               return new BooleanValue($this->isTruthy());
             }
-            if ($other->getValue()->equals(new StringType(false))) {
+            if ($other->getValue()->equals(new StringType())) {
               return new StringValue($this->toString());
             }
           }

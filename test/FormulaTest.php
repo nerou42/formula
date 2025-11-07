@@ -63,11 +63,11 @@ class FormulaTest extends TestCase {
     $formula = new Formula($str, $scope);
     $this->assertInstanceOf(FloatType::class, $formula->getReturnType());
     for ($i = 0; $i < 10; $i++) {
-      $a = rand(-1000, 1000);
-      $b = rand(-1000, 1000);
-      $c = rand(-1000, 1000);
-      $d = rand(-1000, 1000);
-      $e = rand(-1000, 1000) + 1.5;
+      $a = random_int(-1000, 1000);
+      $b = random_int(-1000, 1000);
+      $c = random_int(-1000, 1000);
+      $d = random_int(-1000, 1000);
+      $e = random_int(-1000, 1000) + 1.5;
       $scope->assignPHP('a', $a);
       $scope->assignPHP('b', $b);
       $scope->assignPHP('c', $c);
@@ -84,12 +84,12 @@ class FormulaTest extends TestCase {
     $scope->definePHP(false, 'b', 1);
     $formula = new Formula($str, $scope);
     for ($i = 0; $i < 1; $i++) {
-      $a = rand(0, 10);
-      $b = rand(0, 10);
+      $a = random_int(0, 10);
+      $b = random_int(0, 10);
       $scope->assignPHP('a', $a);
       $scope->assignPHP('b', $b);
       $result = $formula->calculate();
-      $this->assertEquals(pow($a, $b), $result->toPHPValue());
+      $this->assertEquals($a ** $b, $result->toPHPValue());
     }
   }
 
@@ -191,7 +191,7 @@ class FormulaTest extends TestCase {
 
   public function testComplexExpression(): void {
     $scope = new DefaultScope();
-    $scope->definePHP(true, 'getMeasurements', [$this, 'getMeasurements']);
+    $scope->definePHP(true, 'getMeasurements', $this->getMeasurements(...));
     $scope->definePHP(true, 'S4799ID', 4799);
     $scope->definePHP(true, 'S1820ID', 1820);
     $scope->definePHP(true, 'S1555ID', 1555);

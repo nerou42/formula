@@ -13,14 +13,14 @@ use TimoLehnertz\formula\PrettyPrintOptions;
 class OuterFunctionArgumentListType extends Type {
 
   /**
-   * @var array<OuterFunctionArgument>
+   * @var OuterFunctionArgument[]
    */
   private readonly array $arguments;
 
   public readonly bool $isVArgs;
 
   /**
-   * @var array<OuterFunctionArgument>
+   * @param OuterFunctionArgument[] $arguments
    */
   public function __construct(array $arguments, bool $isVArgs = false) {
     parent::__construct();
@@ -92,7 +92,7 @@ class OuterFunctionArgumentListType extends Type {
     for ($i = 0; $i < count($type->arguments); $i++) {
       $sourceType = $type->arguments[$i]->type;
       $targetType = $this->getArgumentType($i);
-      if (!$targetType->assignableBy($sourceType)) {
+      if ($targetType === null || !$targetType->assignableBy($sourceType)) {
         return false;
       }
     }
@@ -114,7 +114,7 @@ class OuterFunctionArgumentListType extends Type {
     return true;
   }
 
-  public function getIdentifier(bool $isNested = false): string {
+  public function getIdentifier(bool $nested = false): string {
     $identifier = '';
     $delimiter = '';
     for ($i = 0; $i < count($this->arguments); $i++) {
@@ -137,7 +137,7 @@ class OuterFunctionArgumentListType extends Type {
   }
 
   /**
-   * @param array<string, Type> $arguments
+   * @param array<string, Type> $types
    */
   public function mergeArgumentTypes(array $types): OuterFunctionArgumentListType {
     $newArgs = [];

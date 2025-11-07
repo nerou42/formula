@@ -50,7 +50,7 @@ class PHPClassInstanceValue extends Value {
         $methodReflection = $reflection->getMethod($other->getMemberIdentifier());
         $returnType = $methodReflection->getReturnType();
         $isVoid = $returnType instanceof \ReflectionNamedType && $returnType->getName() === 'void';
-        return new FunctionValue(new PHPFunctionBody(function (...$args) use (&$instance, &$reflection, &$other) {
+        return new FunctionValue(new PHPFunctionBody(static function (mixed ...$args) use(&$instance, &$reflection, &$other): Value {
           return Scope::convertPHPVar($reflection->getMethod($other->getMemberIdentifier())->invoke($instance, ...$args), true)[1];
         }, $isVoid, Scope::getFunctionRuntimeData($methodReflection)));
       }

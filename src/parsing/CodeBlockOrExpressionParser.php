@@ -21,7 +21,7 @@ class CodeBlockOrExpressionParser extends Parser {
         throw new ParsingSkippedException();
       }
       return new ParserReturn(new CodeBlockOrExpression($parsedExpression->parsed), $parsedExpression->nextToken);
-    } catch (ParsingException | ParsingSkippedException $e) {
+    } catch (ParsingException | ParsingSkippedException) {
       $parsed = (new CodeBlockParser(false, true))->parse($firstToken);
       return new ParserReturn(new CodeBlockOrExpression($parsed->parsed), $parsed->nextToken);
     }

@@ -12,7 +12,7 @@ use TimoLehnertz\formula\procedure\Scope;
  */
 class FunctionValue extends Value {
 
-  private FunctionBody $body;
+  private readonly FunctionBody $body;
 
   public function __construct(FunctionBody $body) {
     $this->body = $body;
@@ -40,7 +40,7 @@ class FunctionValue extends Value {
 
   public function toPHPValue(): mixed {
     $body = $this->body;
-    return function (...$args) use (&$body) {
+    return function (mixed ...$args) use(&$body): mixed {
       $values = [];
       foreach($args as $arg) {
         $values[] = Scope::convertPHPVar($arg, true)[1];
