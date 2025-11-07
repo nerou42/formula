@@ -5,6 +5,7 @@ use PHPUnit\Framework\TestCase;
 use TimoLehnertz\formula\Formula;
 use TimoLehnertz\formula\type\DateTimeImmutableType;
 use TimoLehnertz\formula\procedure\Scope;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class DateTimeImmutableTest extends TestCase {
 
@@ -38,7 +39,7 @@ class DateTimeImmutableTest extends TestCase {
     $this->assertEquals(new \DateTimeImmutable('2024-01-01'), $formula->calculate()->toPHPValue());
   }
 
-  public function formatProvider(): array {
+  public static function formatProvider(): array {
     return [
       ["2008-09-15T15:53:00"],
       ["2008-09-15"],
@@ -53,9 +54,7 @@ class DateTimeImmutableTest extends TestCase {
     ];
   }
 
-  /**
-   * @dataProvider formatProvider
-   */
+  #[DataProvider('formatProvider')]
   public function testFormats(string $format): void {
     $formula = new Formula('"'.$format.'"');
     $this->assertInstanceOf(DateTimeImmutableType::class, $formula->getReturnType());

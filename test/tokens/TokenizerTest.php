@@ -2,6 +2,7 @@
 namespace test\tokens;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use TimoLehnertz\formula\tokens\Tokenizer;
 use TimoLehnertz\formula\tokens\Token;
 use TimoLehnertz\formula\tokens\TokenisationException;
@@ -104,9 +105,7 @@ class TokenizerTest extends TestCase {
     ];
   }
 
-  /**
-   * @dataProvider provideTokens
-   */
+  #[DataProvider('provideTokens')]
   public function testTokens(int $id, string $src, string $expected): void {
     $tokenized = Tokenizer::tokenize($src);
     $this->assertEquals($id, $tokenized->id);

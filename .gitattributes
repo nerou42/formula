@@ -1,8 +1,12 @@
 /.github                  export-ignore
 /.gitignore               export-ignore
 /.gitattributes           export-ignore
+/baseline.xml             export-ignore
+/package-lock.json        export-ignore
+/phpbench.json            export-ignore
 /phpunit.xml              export-ignore
 /psalm.xml                export-ignore
+/rector.php               export-ignore
 /test                     export-ignore
 
 *.php                     text eol=lf

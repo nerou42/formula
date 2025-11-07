@@ -2,6 +2,7 @@
 namespace test\parsing;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use TimoLehnertz\formula\PrettyPrintOptions;
 use TimoLehnertz\formula\operator\OperatorType;
 use TimoLehnertz\formula\operator\ParsedOperator;
@@ -10,7 +11,7 @@ use TimoLehnertz\formula\tokens\Tokenizer;
 
 class OperatorParserTest extends TestCase {
 
-  public function provideOperators(): array {
+  public static function provideOperators(): array {
     $dataset = [
       ["a::b", '::', 1, OperatorType::InfixOperator],
       ['(int[]|boolean)', '(int[]|boolean)', 0, OperatorType::PrefixOperator],
@@ -53,9 +54,7 @@ class OperatorParserTest extends TestCase {
     return $dataset;
   }
 
-  /**
-   * @dataProvider provideOperators
-   */
+  #[DataProvider('provideOperators')]
   public function test(string $source, string $expectedOperator, int $startToken, OperatorType $operatorType): void {
     $token = Tokenizer::tokenize($source);
     while($startToken-- > 0) {

@@ -33,6 +33,7 @@ use TimoLehnertz\formula\type\functions\FunctionType;
 use TimoLehnertz\formula\type\functions\OuterFunctionArgument;
 use TimoLehnertz\formula\type\functions\OuterFunctionArgumentListType;
 use TimoLehnertz\formula\ValueUnsetException;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class ScopeTest extends TestCase {
 
@@ -106,7 +107,7 @@ class ScopeTest extends TestCase {
     $this->assertTrue($scope->isUsed('i'));
   }
 
-  public function phpVarProvider(): array {
+  public static function phpVarProvider(): array {
     return [
       [1, new IntegerType(), new IntegerValue(1)],
       [1.5, new FloatType(), new FloatValue(1.5)],
@@ -122,9 +123,7 @@ class ScopeTest extends TestCase {
     ];
   }
 
-  /**
-   * @dataProvider phpVarProvider
-   */
+  #[DataProvider('phpVarProvider')]
   public function testConvertPHPVar(mixed $phpValue, Type $expectedType, Value $expectedValue): void {
     $res = Scope::convertPHPVar($phpValue);
     $this->assertTrue($expectedType->equals($res[0]));

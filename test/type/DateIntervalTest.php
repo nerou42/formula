@@ -2,13 +2,14 @@
 namespace test\type;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use TimoLehnertz\formula\Formula;
 use TimoLehnertz\formula\procedure\Scope;
 use TimoLehnertz\formula\type\DateIntervalType;
 
 class DateIntervalTest extends TestCase {
 
-  public function formatProvider(): array {
+  public static function formatProvider(): array {
     return [
       ["P0Y"],
       ["P1M"],
@@ -33,9 +34,7 @@ class DateIntervalTest extends TestCase {
     ];
   }
 
-  /**
-   * @dataProvider formatProvider
-   */
+  #[DataProvider('formatProvider')]
   public function testFormats(string $format): void {
     $formula = new Formula('"'.$format.'"');
     $this->assertInstanceOf(DateIntervalType::class, $formula->getReturnType());

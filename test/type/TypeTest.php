@@ -47,6 +47,7 @@ use TimoLehnertz\formula\type\classes\ConstructorType;
 use TimoLehnertz\formula\type\classes\ClassTypeValue;
 use TimoLehnertz\formula\type\classes\ConstructorValue;
 use TimoLehnertz\formula\type\functions\RuntimeFunctionArgsData;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class TypeTest extends TestCase {
 
@@ -108,7 +109,7 @@ class TypeTest extends TestCase {
     $this->assertEquals(-2, $binaryResultType->getRestrictedValues()[0]->toPHPValue());
   }
 
-  public function provider(): array {
+  public static function provider(): array {
     $tests = [];
     /**
      * IntegerType
@@ -393,9 +394,9 @@ class TypeTest extends TestCase {
   }
 
   /**
-   * @dataProvider provider
    * @param array<OperatorTestMeta> $operators
    */
+  #[DataProvider('provider')]
   public function testTypes(mixed $phpValue, Type $type, Type $equal, Type $notEqual, Type $assignable, Type $notAssignable, string $expectedIdentifier, array $operators, ?Value $testValue, ?string $expectedValueString, ?bool $expectedTruthyness, ?Value $equalValue, ?Value $notEqualValue, ?bool $copyEquals): void {
     // var_dump(json_encode((new Formula('1+1'))->getNodeTree()));
 

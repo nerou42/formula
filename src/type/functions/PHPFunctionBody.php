@@ -23,9 +23,6 @@ class PHPFunctionBody implements FunctionBody {
    */
   private readonly bool $voidFunction;
 
-  /**
-   * @param array<int, mixed> $valueParams
-   */
   public function __construct(callable $callable, bool $voidFunction, RuntimeFunctionArgsData $runtimeData) {
     $this->callable = $callable;
     $this->voidFunction = $voidFunction;

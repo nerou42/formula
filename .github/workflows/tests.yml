@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Psalm
         uses: docker://vimeo/psalm-github-actions
@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         
       # Install dependencies and handle caching in one go.
       - name: Install Composer dependencies
@@ -31,7 +31,24 @@ jobs:
           custom-cache-suffix: $(date -u "+%Y-%m")
 
       - name: Unit tests
-        uses: php-actions/phpunit@v3
+        uses: php-actions/phpunit@v4
         with:
-          version: '9.5'
+          version: '10'
           php_version: '8.1'
+
+  rector:
+    runs-on: ubuntu-latest
+    name: Rector
+    
+    steps:
+      - uses: actions/checkout@v5
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: /tmp/composer-cache
+          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+      - uses: php-actions/composer@v6
+        with:
+          php_version: "8.4"
+      - name: Check compatibility
+        run: composer rector

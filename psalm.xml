@@ -1,10 +1,9 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="8"
+    errorLevel="2"
     resolveFromConfigFile="true"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
-    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
     findUnusedBaselineEntry="true"
     findUnusedCode="true"
     errorBaseline="baseline.xml"
@@ -21,5 +20,7 @@
         <PossiblyUnusedProperty errorLevel="info" />
         <PossiblyUnusedParam errorLevel="info" />
         <PossiblyUnusedMethod errorLevel="info" />
+        <MissingOverrideAttribute errorLevel="info" />
+        <ClassMustBeFinal errorLevel="info" />
 	</issueHandlers>
 </psalm>

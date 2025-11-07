@@ -11,10 +11,11 @@ use TimoLehnertz\formula\type\functions\OuterFunctionArgumentListType;
 use TimoLehnertz\formula\type\IntegerType;
 use TimoLehnertz\formula\type\Type;
 use TimoLehnertz\formula\type\VoidType;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class TypeToNodeTest extends TestCase {
 
-  public function provider(): array {
+  public static function provider(): array {
     return [
       [
         new ClassType(null, 'TestClass', ['i' => new FieldType(false, new IntegerType())]),
@@ -62,9 +63,7 @@ class TypeToNodeTest extends TestCase {
     ];
   }
 
-  /**
-   * @dataProvider provider
-   */
+  #[DataProvider('provider')]
   public function testNodes(Type $type, array $expectedNode): void {
     $this->assertEquals($expectedNode, json_decode(json_encode($type->getInterfaceType()), true));
   }

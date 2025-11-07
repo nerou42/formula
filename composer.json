@@ -1,39 +1,43 @@
 {
 	"name": "nerou/formula",
 	"description": "An open source PHP formula parser based on https://github.com/socialist/formula",
+  "keywords": [
+    "formula",
+    "math"
+  ],
+  "readme": "README.md",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Social IST",
+      "email": "sergey@socialist.pw"
+    },
+    {
+      "name": "Timo Lehnertz"
+    }
+  ],
 	"require": {
 		"php": ">=8.1"
 	},
+  "require-dev": {
+    "psalm/phar": "^6.0",
+    "phpunit/phpunit": "^12.0",
+    "phpbench/phpbench": "^1.4",
+    "rector/rector": "^2.0"
+  },
 	"autoload": {
 		"psr-4": {
 			"TimoLehnertz\\formula\\": "src/"
 		}
 	},
-	"keywords": [
-		"formula",
-		"math"
-	],
-	"readme": "README.md",
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "Social IST",
-			"email": "sergey@socialist.pw"
-		},
-		{
-			"name": "Timo Lehnertz"
-		}
-	],
 	"scripts": {
-		"phpunit": "phpunit test",
-		"psalm": "psalm",
+		"phpunit": "./vendor/bin/phpunit test",
+		"psalm": "./vendor/bin/psalm.phar",
+    "rector": "./vendor/bin/rector process --dry-run",
 		"tests": [
-			"@phpunit"
+			"@phpunit",
+      "@psalm",
+      "@rector"
 		]
-	},
-	"require-dev": {
-		"psalm/phar": "5.23",
-		"phpunit/phpunit": "9.5.*",
-		"phpbench/phpbench": "^1.4"
 	}
 }

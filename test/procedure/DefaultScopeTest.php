@@ -2,6 +2,7 @@
 namespace test\procedure;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use TimoLehnertz\formula\Formula;
 use TimoLehnertz\formula\type\ArrayType;
 use TimoLehnertz\formula\type\BooleanType;
@@ -20,7 +21,7 @@ use TimoLehnertz\formula\procedure\DefaultScope;
 
 class DefaultScopeTest extends TestCase {
 
-  public function functionProvider(): array {
+  public static function functionProvider(): array {
     return [
       ["print('Hello world!')", new VoidType(), null, 'Hello world!'],
       ["println('Hello world!')", new VoidType(), null, 'Hello world!'.PHP_EOL],
@@ -69,9 +70,7 @@ class DefaultScopeTest extends TestCase {
     new Formula('sum({"abc"})', new DefaultScope());
   }
 
-  /**
-   * @dataProvider functionProvider
-   */
+  #[DataProvider('functionProvider')]
   public function testFunctions(string $source, Type $expectedReturnType, mixed $expectedReturn, ?string $expectedOutput): void {
     $formula = new Formula($source);
     if($expectedOutput !== null) {
