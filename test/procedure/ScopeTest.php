@@ -164,7 +164,7 @@ class ScopeTest extends TestCase {
     $this->assertEquals(0, $formula->calculate()->toPHPValue());
   }
 
-  public function testFormulInFormula(): void {
+  public function testFormulaInFormula(): void {
     $scope = new Scope();
     $scope->definePHP(true, 'Formula', Formula::class);
     $scope->definePHP(true, 'Scope', Scope::class);
@@ -265,7 +265,7 @@ class ScopeTest extends TestCase {
     $this->assertEquals(2, $scope->get('i')->toPHPValue());
   }
 
-  public function testReadUninitilized(): void {
+  public function testReadUninitialized(): void {
     $scope = new Scope();
     $scope->define(true, new IntegerType(), 'i');
     $this->expectException(ValueUnsetException::class);

@@ -105,6 +105,8 @@ class Scope {
         return self::setNullable(Scope::reflectionClassToType(new \ReflectionClass($reflectionType->getName())), $reflectionType->allowsNull());
       } elseif (interface_exists($reflectionType->getName())) {
         return self::setNullable(Scope::reflectionClassToType(new \ReflectionClass($reflectionType->getName())), $reflectionType->allowsNull());
+      } elseif($reflectionType->getName() === 'static') {
+        return new MixedType();
       }
     } elseif ($reflectionType instanceof \ReflectionUnionType) {
       $types = [];
