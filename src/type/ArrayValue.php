@@ -47,23 +47,10 @@ class ArrayValue extends ClassInstanceValue implements IteratableValue {
   }
 
   protected function valueOperate(ImplementableOperator $operator, ?Value $other): Value {
-    if($operator->getOperatorType() !== OperatorType::InfixOperator || $other === null) {
+    if($operator->getOperatorType() === OperatorType::InfixOperator && $other === null) {
       throw new FormulaBugException('Expected an operator');
     }
     switch($operator->getID()) {
-      case ImplementableOperator::TYPE_ARRAY_ACCESS:
-        $key = $other->toPHPValue();
-        if(isset($this->value[$key])) {
-          return $this->value[$key];
-        } else {
-          return new ArrayPointerValue($this, $key);
-        }
-      case ImplementableOperator::TYPE_MEMBER_ACCESS:
-        return parent::valueOperate($operator, $other);
-      case ImplementableOperator::TYPE_TYPE_CAST:
-        if(($other instanceof TypeValue) && ($other->getValue() instanceof ArrayType)) {
-          $other = new TypeValue($other->getValue()->getElementsType());
-        }
       // intentionally no break
       case ImplementableOperator::TYPE_ADDITION:
       case ImplementableOperator::TYPE_SUBTRACTION:
@@ -90,6 +77,24 @@ class ArrayValue extends ClassInstanceValue implements IteratableValue {
         }
         return new ArrayValue($newVals);
     }
+    if($other === null) {
+      throw new FormulaBugException('Expected an operand');
+    }
+    switch($operator->getID()) {
+      case ImplementableOperator::TYPE_ARRAY_ACCESS:
+        $key = $other->toPHPValue();
+        if(isset($this->value[$key])) {
+          return $this->value[$key];
+        } else {
+          return new ArrayPointerValue($this, $key);
+        }
+      case ImplementableOperator::TYPE_MEMBER_ACCESS:
+        return parent::valueOperate($operator, $other);
+      case ImplementableOperator::TYPE_TYPE_CAST:
+        if(($other instanceof TypeValue) && ($other->getValue() instanceof ArrayType)) {
+          $other = new TypeValue($other->getValue()->getElementsType());
+        }
+      }
     throw new FormulaBugException('Invalid operation');
   }
 
