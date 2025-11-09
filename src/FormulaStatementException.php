@@ -6,6 +6,7 @@ use TimoLehnertz\formula\statement\Statement;
 
 /**
  * @author Timo Lehnertz
+ * @api
  */
 class FormulaStatementException extends FormulaException {
 

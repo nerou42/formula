@@ -55,7 +55,7 @@ class FunctionParser extends Parser {
         throw new ParsingSkippedException();
       }
     }
-    $functionArgumentParser = new EnumeratedParser('Function arguments', new InnerFunctionArgumentParser(false), Token::BRACKETS_OPEN, Token::COMMA, Token::BRACKETS_CLOSED, false, true);
+    $functionArgumentParser = new EnumeratedParser('Function arguments', new InnerFunctionArgumentParser(), Token::BRACKETS_OPEN, Token::COMMA, Token::BRACKETS_CLOSED, false, true);
     try {
       $parsedArguments = $functionArgumentParser->parse($token);
     } catch(ParsingException) {

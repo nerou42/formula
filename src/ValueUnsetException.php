@@ -4,6 +4,7 @@ namespace TimoLehnertz\formula;
 
 /**
  * @author Timo Lehnertz
+ * @api
  */
 class ValueUnsetException extends FormulaRuntimeException {
 

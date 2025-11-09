@@ -10,12 +10,12 @@ use TimoLehnertz\formula\tokens\Token;
 class VariantParser extends Parser {
 
   /**
-   * @var array<Parser>
+   * @var Parser[]
    */
   private readonly array $parsers;
 
   /**
-   * @param array<Parser> $parsers
+   * @param Parser[] $parsers
    */
   public function __construct(string $name, array $parsers) {
     parent::__construct($name);
@@ -23,7 +23,6 @@ class VariantParser extends Parser {
   }
 
   protected function parsePart(Token $firstToken): ParserReturn {
-    /** @var Parser $parser */
     foreach($this->parsers as $parser) {
       try {
         return $parser->parse($firstToken);

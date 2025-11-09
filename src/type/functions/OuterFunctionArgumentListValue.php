@@ -12,12 +12,12 @@ use TimoLehnertz\formula\type\Value;
 class OuterFunctionArgumentListValue extends Value {
 
   /**
-   * @var array<Value>
+   * @var Value[]
    */
   private readonly array $values;
 
   /**
-   * @param array<Value>
+   * @param Value[] $values
    */
   public function __construct(array $values) {
     $this->values = $values;

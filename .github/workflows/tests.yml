@@ -16,8 +16,19 @@ jobs:
           args: --shepherd
           
   unit-tests:
-    name: Unit tests
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php:
+          - version: "8.1"
+            phpunit: "10"
+          - version: "8.2"
+            phpunit: "10"
+          - version: "8.3"
+            phpunit: "11"
+          - version: "8.4"
+            phpunit: "12"
+    name: "Unit tests: PHP ${{ matrix.php.version }}"
 
     steps:
       - name: Checkout
@@ -29,12 +40,13 @@ jobs:
         with:
           # Bust the cache at least once a month - output format: YYYY-MM.
           custom-cache-suffix: $(date -u "+%Y-%m")
+          php-version: "${{ matrix.php.version }}"
 
       - name: Unit tests
         uses: php-actions/phpunit@v4
         with:
-          version: '10'
-          php_version: '8.1'
+          version: "${{ matrix.php.phpunit }}"
+          php_version: "${{ matrix.php.version }}"
 
   rector:
     runs-on: ubuntu-latest

@@ -18,6 +18,7 @@ use TimoLehnertz\formula\procedure\DefaultScope;
  * This class represents a formula session that can interpret/run code
  *
  * @author Timo Lehnertz
+ * @api
  */
 class Formula {
 

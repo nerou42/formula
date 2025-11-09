@@ -29,7 +29,6 @@ class OuterFunctionArgumentListType extends Type {
     // check that optional parameters are at the end
     $optional = false;
     for ($i = 0; $i < count($arguments); $i++) {
-      /** @var OuterFunctionArgument $argument */
       $argument = $arguments[$i];
       if ($optional && !$argument->optional) {
         throw new FormulaValidationException('Not optional parameter cannot follow optional parameter');
@@ -60,7 +59,6 @@ class OuterFunctionArgumentListType extends Type {
 
   public function getMinArgumentCount(): int {
     $count = 0;
-    /** @var OuterFunctionArgument $argument */
     foreach ($this->arguments as $argument) {
       if ($argument->optional) {
         break;

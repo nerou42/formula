@@ -4,8 +4,6 @@ namespace TimoLehnertz\formula\type;
 
 use TimoLehnertz\formula\type\classes\ClassInstanceValue;
 use TimoLehnertz\formula\type\classes\FieldValue;
-use ReflectionEnumBackedCase;
-use ReflectionEnumUnitCase;
 
 /**
  * @author Timo Lehnertz
@@ -16,7 +14,6 @@ class EnumTypeValue extends ClassInstanceValue {
 
   public function __construct(\ReflectionEnum $reflection) {
     $fields = [];
-    /**  @var ReflectionEnumUnitCase|ReflectionEnumBackedCase $enumCase */
     foreach($reflection->getCases() as $enumCase) {
       $fields[$enumCase->getName()] = new FieldValue(new EnumInstanceValue($enumCase->getValue()));
     }

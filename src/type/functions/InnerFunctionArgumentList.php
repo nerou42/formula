@@ -12,12 +12,12 @@ use TimoLehnertz\formula\PrettyPrintOptions;
 /**
  * @author Timo Lehnertz
  *
- *         Represents a function argument as seen from inside a function
+ * Represents a function argument as seen from inside a function
  */
 class InnerFunctionArgumentList {
 
   /**
-   * @var array<InnerFunctionArgument>
+   * @var InnerFunctionArgument[]
    */
   private readonly array $arguments;
 
@@ -26,13 +26,12 @@ class InnerFunctionArgumentList {
   private readonly int $minArgCount;
 
   /**
-   * @param array<InnerFunctionArgument> $arguments
+   * @param InnerFunctionArgument[] $arguments
    */
   public function __construct(array $arguments, ?InnerVargFunctionArgument $varg) {
     $this->arguments = $arguments;
     $this->varg = $varg;
     $minArgCount = 0;
-    /** @var InnerFunctionArgument $arg */
     foreach($this->arguments as $arg) {
       if(!$arg->isOptional()) {
         $minArgCount++;
@@ -49,12 +48,10 @@ class InnerFunctionArgumentList {
     $count = min(count($this->arguments), count($args->getValues()));
     for(;$i < $count;$i++) {
       $value = $args->getValues()[$i];
-      /** @var InnerFunctionArgument $innerArgument */
       $innerArgument = $this->arguments[$i];
       $scope->define($innerArgument->final, $innerArgument->type, $innerArgument->name, $value);
     }
     for(;$i < count($this->arguments);$i++) {
-      /** @var InnerFunctionArgument $innerArgument */
       $innerArgument = $this->arguments[$i];
       if($innerArgument->defaultExpression === null) {
         throw new FormulaBugException('expected default expression');
@@ -73,7 +70,6 @@ class InnerFunctionArgumentList {
   }
 
   public function populateScopeDefinesOnly(Scope $scope): void {
-    /**  @var InnerFunctionArgument $argument */
     foreach($this->arguments as $argument) {
       $scope->define($argument->final, $argument->type, $argument->name);
     }
@@ -84,7 +80,6 @@ class InnerFunctionArgumentList {
 
   public function toOuterType(): OuterFunctionArgumentListType {
     $args = [];
-    /** @var InnerFunctionArgument $argument */
     foreach($this->arguments as $argument) {
       $args[] = new OuterFunctionArgument($argument->type, $argument->isOptional(), false);
     }
@@ -97,9 +92,6 @@ class InnerFunctionArgumentList {
   public function tostring(PrettyPrintOptions $prettyPrintOptions): string {
     $str = '(';
     $del = '';
-    /**
-     * @var InnerFunctionArgument $argument
-     */
     foreach($this->arguments as $argument) {
       $str .= $del.$argument->toString($prettyPrintOptions);
       $del = ',';

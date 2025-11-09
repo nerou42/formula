@@ -16,11 +16,7 @@
     </projectFiles>
     
     <issueHandlers>
-        <UnnecessaryVarAnnotation errorLevel="info" />
-        <PossiblyUnusedProperty errorLevel="info" />
-        <PossiblyUnusedParam errorLevel="info" />
-        <PossiblyUnusedMethod errorLevel="info" />
-        <MissingOverrideAttribute errorLevel="info" />
+        <MissingOverrideAttribute errorLevel="suppress" />
         <ClassMustBeFinal errorLevel="info" />
 	</issueHandlers>
 </psalm>

@@ -91,22 +91,22 @@ class Scope {
           'never' => self::setNullable(new NeverType(), $reflectionType->allowsNull()),
           default => throw new FormulaBugException('Unsupported inbuilt type ' . $reflectionType->getName())
         };
-      } else if (enum_exists($reflectionType->getName())) {
+      } elseif (enum_exists($reflectionType->getName())) {
         return self::setNullable(new EnumInstanceType(new EnumTypeType(new \ReflectionEnum($reflectionType->getName()))), $reflectionType->allowsNull());
-      } else if (class_exists($reflectionType->getName())) {
+      } elseif (class_exists($reflectionType->getName())) {
         if ($reflectionType->getName() === \DateInterval::class) {
           return self::setNullable(new DateIntervalType(), $reflectionType->allowsNull());
-        } else if ($reflectionType->getName() === \DateTimeImmutable::class) {
+        } elseif ($reflectionType->getName() === \DateTimeImmutable::class) {
           return self::setNullable(new DateTimeImmutableType(), $reflectionType->allowsNull());
-        } else if ($reflectionType->getName() === Value::class) {
+        } elseif ($reflectionType->getName() === Value::class) {
           // Functions can accept values to avoid having to convert them when returning them. But in that case we cant know the type.
           return self::setNullable(new MixedType(), $reflectionType->allowsNull());
         }
         return self::setNullable(Scope::reflectionClassToType(new \ReflectionClass($reflectionType->getName())), $reflectionType->allowsNull());
-      } else if (interface_exists($reflectionType->getName())) {
+      } elseif (interface_exists($reflectionType->getName())) {
         return self::setNullable(Scope::reflectionClassToType(new \ReflectionClass($reflectionType->getName())), $reflectionType->allowsNull());
       }
-    } else if ($reflectionType instanceof \ReflectionUnionType) {
+    } elseif ($reflectionType instanceof \ReflectionUnionType) {
       $types = [];
       foreach ($reflectionType->getTypes() as $type) {
         $types[] = self::reflectionTypeToFormulaType($type);
@@ -125,7 +125,7 @@ class Scope {
   }
 
   /**
-   * @param OuterFunctionArgumentListType|array<string, Type>|null|null $argumentType
+   * @param OuterFunctionArgumentListType|array<string, Type>|null $argumentType
    */
   public function definePHP(bool $final, string $identifier, mixed $value, OuterFunctionArgumentListType|array|null $argumentType = null, ?Type $generalReturnType = null, ?SpecificReturnType $specificFunctionReturnType = null): void {
     $value = Scope::convertPHPVar($value, false, $argumentType, $generalReturnType, $specificFunctionReturnType);
@@ -148,7 +148,7 @@ class Scope {
   public function get(string $identifier): Value {
     if (isset($this->defined[$identifier])) {
       return $this->defined[$identifier]->get();
-    } else if ($this->parent !== null) {
+    } elseif ($this->parent !== null) {
       return $this->parent->get($identifier);
     } else {
       throw new FormulaRuntimeException($identifier . ' is not defined');
@@ -159,7 +159,7 @@ class Scope {
     if (isset($this->defined[$identifier])) {
       $this->defined[$identifier]->setUsed(true);
       return $this->defined[$identifier]->getType();
-    } else if ($this->parent !== null) {
+    } elseif ($this->parent !== null) {
       return $this->parent->use($identifier);
     } else {
       throw new FormulaRuntimeException($identifier . ' is not defined');
@@ -190,7 +190,6 @@ class Scope {
     $arguments = [];
     $reflectionArguments = $reflection->getParameters();
     $vargs = false;
-    /**  @var \ReflectionParameter  $reflectionArgument */
     foreach ($reflectionArguments as $reflectionArgument) {
       if ($reflectionArgument->isVariadic()) {
         $vargs = true;
@@ -217,11 +216,9 @@ class Scope {
     Scope::$phpClassTypes[$reflection->getName()] = new ClassType(null, '--', []); // dummy
 
     $fieldTypes = [];
-    /** @var \ReflectionProperty $refelctionProperty */
     foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $refelctionProperty) {
       $fieldTypes[$refelctionProperty->getName()] = new FieldType($refelctionProperty->isReadOnly(), Scope::reflectionTypeToFormulaType($refelctionProperty->getType()));
     }
-    /** @var \ReflectionMethod $reflectionMethod */
     foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
       if ($reflectionMethod->isConstructor()) {
         continue;
@@ -263,16 +260,16 @@ class Scope {
   public static function convertPHPVar(mixed $value, bool $onlyValue = false, OuterFunctionArgumentListType|array|null $argumentType = null, ?Type $generalReturnType = null, ?SpecificReturnType $specificFunctionReturnType = null): array {
     if ($value instanceof Value) {
       return [null, $value];
-    } else if ($value instanceof \DateTimeImmutable) {
+    } elseif ($value instanceof \DateTimeImmutable) {
       return [new DateTimeImmutableType(), new DateTimeImmutableValue($value)];
-    } else if ($value instanceof \DateInterval) {
+    } elseif ($value instanceof \DateInterval) {
       return [new DateIntervalType(), new DateIntervalValue($value)];
-    } else if ($value instanceof \UnitEnum) {
+    } elseif ($value instanceof \UnitEnum) {
       return [new EnumInstanceType(new EnumTypeType(new \ReflectionEnum($value::class))), new EnumInstanceValue($value)];
-    } else if (is_string($value) && enum_exists($value)) {
+    } elseif (is_string($value) && enum_exists($value)) {
       $reflection = new \ReflectionEnum($value);
       return [new EnumTypeType($reflection), new EnumTypeValue($reflection)];
-    } else if (is_string($value) && class_exists($value)) {
+    } elseif (is_string($value) && class_exists($value)) {
       $reflection = new \ReflectionClass($value);
       $classType = Scope::reflectionClassToType($reflection);
       if ($reflection->getConstructor() === null) {
@@ -293,17 +290,17 @@ class Scope {
       $contructorType = new ConstructorType($constructorFunctionType->arguments, $classType);
 
       return [new ClassTypeType($contructorType), new ClassTypeValue($constructor)];
-    } else if (is_int($value)) {
+    } elseif (is_int($value)) {
       return [new IntegerType(), new IntegerValue($value)];
-    } else if (is_float($value)) {
+    } elseif (is_float($value)) {
       return [new FloatType(), new FloatValue($value)];
-    } else if (is_bool($value)) {
+    } elseif (is_bool($value)) {
       return [new BooleanType(), new BooleanValue($value)];
-    } else if (is_string($value)) {
+    } elseif (is_string($value)) {
       return [new StringType(), new StringValue($value)];
-    } else if ($value === null) {
+    } elseif ($value === null) {
       return [new NullType(), new NullValue()];
-    } else if (is_callable($value)) {
+    } elseif (is_callable($value)) {
       if (is_array($value)) {
         $reflection = new \ReflectionMethod($value[0], $value[1]);
       } else {
@@ -312,7 +309,7 @@ class Scope {
       $functionType = Scope::reflectionFunctionToType($reflection, $argumentType, $generalReturnType, $specificFunctionReturnType);
       $functionBody = new PHPFunctionBody($value, $functionType->generalReturnType instanceof VoidType, static::getFunctionRuntimeData($reflection));
       return [$functionType, new FunctionValue($functionBody)];
-    } else if (is_array($value)) {
+    } elseif (is_array($value)) {
       $values = [];
       $valueTypes = [];
       $keyTypes = [];
@@ -330,15 +327,13 @@ class Scope {
       } else {
         return [new ArrayType(CompoundType::buildFromTypes($keyTypes), CompoundType::buildFromTypes($valueTypes)), new ArrayValue($values)];
       }
-    } else if (is_object($value)) {
+    } elseif (is_object($value)) {
       $reflection = new \ReflectionClass($value);
       $fieldTypes = [];
       //       $fieldValues = [];
-      /** @var \ReflectionProperty $refelctionProperty */
       foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $refelctionProperty) {
         $fieldTypes[$refelctionProperty->getName()] = new FieldType($refelctionProperty->isReadOnly(), Scope::reflectionTypeToFormulaType($refelctionProperty->getType()));
       }
-      /** @var \ReflectionMethod $reflectionMethod */
       foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
         if ($reflectionMethod->isConstructor()) {
           continue;
@@ -359,7 +354,7 @@ class Scope {
   public function assign(string $identifier, Value $value, bool $ignoreFinal = false): void {
     if (isset($this->defined[$identifier])) {
       $this->defined[$identifier]->assign($value, $ignoreFinal);
-    } else if ($this->parent !== null) {
+    } elseif ($this->parent !== null) {
       $this->parent->assign($identifier, $value, $ignoreFinal);
     } else {
       throw new FormulaRuntimeException($identifier . ' is not defined');
