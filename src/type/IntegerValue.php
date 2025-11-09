@@ -11,7 +11,7 @@ class IntegerValue extends Value {
 
   private readonly int $value;
 
-  public function __construct(int $value) {
+  public final function __construct(int $value) {
     $this->value = $value;
   }
 

@@ -48,6 +48,6 @@ class VariableDeclarationStatement extends Statement {
   }
 
   public function toString(PrettyPrintOptions $prettyPrintOptions): string {
-    return ($this->final ? 'final ' : '') . $this->type->getIdentifier() . ' ' . $this->identifier . ' = ' . $this->initializer->toString($prettyPrintOptions) . ';';
+    return ($this->final ? 'final ' : '') . ($this->type?->getIdentifier() ?? 'var') . ' ' . $this->identifier . ' = ' . $this->initializer->toString($prettyPrintOptions) . ';';
   }
 }

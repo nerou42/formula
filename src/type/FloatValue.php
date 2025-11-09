@@ -11,7 +11,7 @@ class FloatValue extends Value {
 
   private readonly float $value;
 
-  public function __construct(float $value) {
+  public final function __construct(float $value) {
     $this->value = $value;
   }
 

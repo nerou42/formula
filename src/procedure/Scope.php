@@ -348,6 +348,9 @@ class Scope {
     throw new FormulaRuntimeException('Unsupported php type');
   }
 
+  /**
+   * @api
+   */
   public function assignPHP(string $identifier, mixed $value, bool $ignoreFinal = false): void {
     $res = Scope::convertPHPVar($value);
     $this->assign($identifier, $res[1], $ignoreFinal);
@@ -363,6 +366,9 @@ class Scope {
     }
   }
 
+  /**
+   * @api
+   */
   public function forget(string $identifier): void {
     if (isset($this->defined[$identifier])) {
       if ($this->defined[$identifier]->isUsed()) {
@@ -374,6 +380,9 @@ class Scope {
     }
   }
 
+  /**
+   * @api
+   */
   public function unset(string $identifier): void {
     if (isset($this->defined[$identifier])) {
       $this->defined[$identifier]->unset();

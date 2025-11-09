@@ -47,8 +47,8 @@ class ArrayValue extends ClassInstanceValue implements IteratableValue {
   }
 
   protected function valueOperate(ImplementableOperator $operator, ?Value $other): Value {
-    if($operator->getOperatorType() === OperatorType::InfixOperator && $other === null) {
-      throw new FormulaBugException('Expected operator');
+    if($operator->getOperatorType() !== OperatorType::InfixOperator || $other === null) {
+      throw new FormulaBugException('Expected an operator');
     }
     switch($operator->getID()) {
       case ImplementableOperator::TYPE_ARRAY_ACCESS:
