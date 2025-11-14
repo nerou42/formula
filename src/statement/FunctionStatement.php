@@ -51,6 +51,6 @@ class FunctionStatement extends Statement {
 
   public function toString(PrettyPrintOptions $prettyPrintOptions): string {
     $functionBody = new FormulaFunctionBody($this->arguments, $this->codeBlock, new Scope());
-    return $this->functionType->generalReturnType->getIdentifier().' '.$this->identifier.$functionBody->toString($prettyPrintOptions);
+    return $this->returnType->getIdentifier().' '.$this->identifier.$functionBody->toString($prettyPrintOptions);
   }
 }

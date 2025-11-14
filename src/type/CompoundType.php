@@ -28,9 +28,6 @@ class CompoundType extends Type {
    * @param Type[] $types
    */
   public static function buildFromTypes(array $types): Type {
-    if(count($types) === 0) {
-      return new NeverType();
-    }
     // flatten
     $notCompoundTypes = [];
     foreach($types as $type) {
@@ -54,7 +51,9 @@ class CompoundType extends Type {
         $uniqueTypes[] = $type;
       }
     }
-    if(count($uniqueTypes) === 1) {
+    if(count($uniqueTypes) === 0) {
+      return new NeverType();
+    } elseif(count($uniqueTypes) === 1) {
       return $uniqueTypes[0]->setRestrictedValues(null);
     } else {
       return new CompoundType($uniqueTypes);
