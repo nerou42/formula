@@ -7,6 +7,7 @@ use TimoLehnertz\formula\expression\ExpressionFunctionBody;
 
 /**
  * @author Timo Lehnertz
+ * @template-extends Parser<ExpressionFunctionBody>
  */
 class ExpressionFunctionBodyParser extends Parser {
 

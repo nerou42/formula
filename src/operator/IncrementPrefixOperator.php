@@ -39,6 +39,9 @@ class IncrementPrefixOperator implements ParsedOperator {
   }
 
   public function buildNode(Scope $scope, ?Expression $leftExpression, ?Expression $rightExpression): Node {
+    if($rightExpression === null) {
+      throw new \InvalidArgumentException('right expression must be given');
+    }
     return new Node('incrementPrefix', [$rightExpression->buildNode($scope)]);
   }
 }

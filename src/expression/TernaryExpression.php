@@ -37,22 +37,34 @@ class TernaryExpression implements Expression {
     return $this->condition->run($scope)->isTruthy() ? $this->leftExpression->run($scope) : $this->rightExpression->run($scope);
   }
 
+  /**
+   * @api
+   */
   public function toString(PrettyPrintOptions $prettyPrintOptions): string {
     return ''.$this->condition->toString($prettyPrintOptions).'?'.$this->leftExpression->toString($prettyPrintOptions).':'.$this->rightExpression->toString($prettyPrintOptions).'';
   }
 
   public function buildNode(Scope $scope): Node {
-    return new Node('TernaryExpression', [$this->condition->buildNode($scope),$this->leftExpression->buildNode($scope),$this->rightExpression->buildNode($scope)]);
+    return new Node('TernaryExpression', [$this->condition->buildNode($scope), $this->leftExpression->buildNode($scope), $this->rightExpression->buildNode($scope)]);
   }
 
+  /**
+   * @api
+   */
   public function getCondition(): Expression {
     return $this->condition;
   }
 
+  /**
+   * @api
+   */
   public function getLeftExpression(): Expression {
     return $this->leftExpression;
   }
 
+  /**
+   * @api
+   */
   public function getRightExpression(): Expression {
     return $this->rightExpression;
   }

@@ -23,7 +23,7 @@ use TimoLehnertz\formula\type\NullType;
  * Type ::= <SingleType> | <CompoundType> | (<CompoundType> | <Type>)<ArrayDimension|<>>
  *
  * @author Timo Lehnertz
- *
+ * @template-extends Parser<Type>
  */
 class TypeParser extends Parser {
 
@@ -80,7 +80,7 @@ class TypeParser extends Parser {
         throw new ParsingSkippedException();
       }
       $token = $token->next();
-      if($token->hasNext()) {
+      if($token !== null && $token->hasNext()) {
         $parsed = $this->parseArrayDimension($token, $type);
         $token = $parsed->nextToken;
         $type = $parsed->parsed;

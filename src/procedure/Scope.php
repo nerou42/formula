@@ -63,6 +63,9 @@ class Scope {
     return $child;
   }
 
+  /**
+   * @api
+   */
   public function isDefined(string $identifier): bool {
     if (isset($this->defined[$identifier])) {
       return true;
@@ -117,7 +120,7 @@ class Scope {
       }
       return self::setNullable(CompoundType::buildFromTypes($types), $reflectionType->allowsNull());
     }
-    throw new \BadMethodCallException('PHP type ' . $reflectionType . ' is not supported');
+    throw new \BadMethodCallException('PHP type ' . $reflectionType::class . ' is not supported');
   }
 
   private static function setNullable(Type $type, bool $nullable): Type {
@@ -170,6 +173,9 @@ class Scope {
     }
   }
 
+  /**
+   * @api
+   */
   public function isUsed(string $identifier): bool {
     if (isset($this->defined[$identifier])) {
       return $this->defined[$identifier]->isUsed();
@@ -307,8 +313,13 @@ class Scope {
     } elseif (is_callable($value)) {
       if (is_array($value)) {
         $reflection = new \ReflectionMethod($value[0], $value[1]);
-      } else {
+      } elseif (is_string($value)) {
         $reflection = new \ReflectionFunction($value);
+      } elseif ($value instanceof \Closure) {
+        $reflection = new \ReflectionFunction($value);
+      } else {
+        // Callable object with __invoke method
+        $reflection = new \ReflectionMethod($value, '__invoke');
       }
       $functionType = Scope::reflectionFunctionToType($reflection, $argumentType, $generalReturnType, $specificFunctionReturnType);
       $functionBody = new PHPFunctionBody($value, $functionType->generalReturnType instanceof VoidType, static::getFunctionRuntimeData($reflection));

@@ -6,6 +6,7 @@ use TimoLehnertz\formula\statement\WhileStatement;
 
 /**
  * @author Timo Lehnertz
+ * @template-extends Parser<WhileStatement>
  */
 class WhileStatementParser extends Parser {
 

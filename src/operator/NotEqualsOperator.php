@@ -36,6 +36,9 @@ class NotEqualsOperator implements ParsedOperator {
   }
 
   public function buildNode(Scope $scope, ?Expression $leftExpression, ?Expression $rightExpression): Node {
+    if($leftExpression === null || $rightExpression === null) {
+      throw new \InvalidArgumentException('expressions must be given');
+    }
     return new Node('notEquals', [$leftExpression->buildNode($scope), $rightExpression->buildNode($scope)]);
   }
 }

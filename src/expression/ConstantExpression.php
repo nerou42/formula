@@ -41,14 +41,23 @@ class ConstantExpression implements Expression {
     return new Node('ConstantExpression', [], ['type' => $this->type->getInterfaceType(),'value' => $this->value->toString()]);
   }
 
+  /**
+   * @api
+   */
   public function getType(): Type {
     return $this->type;
   }
 
+  /**
+   * @api
+   */
   public function getValue(): Value {
     return $this->value;
   }
 
+  /**
+   * @api
+   */
   public function getStringRepresentation(): string {
     return $this->stringRepresentation;
   }

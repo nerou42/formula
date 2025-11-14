@@ -8,6 +8,7 @@ use TimoLehnertz\formula\type\functions\InnerVargFunctionArgument;
 
 /**
  * @author Timo Lehnertz
+ * @template-extends Parser<InnerVargFunctionArgument|InnerFunctionArgument>
  */
 class InnerFunctionArgumentParser extends Parser {
 
@@ -36,11 +37,12 @@ class InnerFunctionArgumentParser extends Parser {
     }
     $identifier = $token->value;
     $parsedExpression = null;
-    if($token->hasNext() && $token->next()->id === Token::ASSIGNMENT) {
+    $next = $token->next();
+    if($next !== null && $next->id === Token::ASSIGNMENT) {
       if($isVarg) {
         throw new ParsingException(ParsingException::ERROR_UNEXPECTED_TOKEN, $token, 'Vargs can\'t have a default initilizer');
       }
-      $parsedExpression = (new ExpressionParser())->parse($token->next()->next());
+      $parsedExpression = (new ExpressionParser())->parse($next->next());
       $token = $parsedExpression->nextToken;
     } else {
       $token = $token->next();

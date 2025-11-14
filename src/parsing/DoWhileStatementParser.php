@@ -6,6 +6,7 @@ use TimoLehnertz\formula\tokens\Token;
 
 /**
  * @author Timo Lehnertz
+ * @template-extends Parser<DoWhileStatement>
  */
 class DoWhileStatementParser extends Parser {
 

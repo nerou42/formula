@@ -35,6 +35,9 @@ class BracketExpression implements Expression {
     return $this->expression->buildNode($scope);
   }
 
+  /**
+   * @api
+   */
   public function getExpression(): Expression {
     return $this->expression;
   }

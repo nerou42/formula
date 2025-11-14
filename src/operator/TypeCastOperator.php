@@ -47,6 +47,9 @@ class TypeCastOperator implements ParsedOperator {
   }
 
   public function buildNode(Scope $scope, ?Expression $leftExpression, ?Expression $rightExpression): Node {
+    if($rightExpression === null) {
+      throw new \InvalidArgumentException('rightExpression must be given');
+    }
     if ($this->explicit) {
       return (new OperatorExpression($rightExpression, new ImplementableOperator(ImplementableOperator::TYPE_TYPE_CAST), new TypeExpression($this->type)))->buildNode($scope);
     } else {

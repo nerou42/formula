@@ -9,6 +9,7 @@ use TimoLehnertz\formula\tokens\Token;
  * '['<Expression>']'
  *
  * @author Timo Lehnertz
+ * @template-extends Parser<ArrayAccessOperator>
  */
 class ArrayOperatorParser extends Parser {
 

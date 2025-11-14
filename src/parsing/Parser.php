@@ -7,6 +7,7 @@ use TimoLehnertz\formula\tokens\Token;
 
 /**
  * @author Timo Lehnertz
+ * @template-covariant T
  */
 abstract class Parser {
 
@@ -19,12 +20,13 @@ abstract class Parser {
   /**
    * @throws ParsingException
    * @throws ParsingSkippedException
+   * @psalm-return ParserReturn<T>
    */
   public function parse(?Token $firstToken, bool $required = false, bool $expectEnd = false): ParserReturn {
-    ParsingException::setParser($this, $firstToken);
     if($firstToken === null) {
       throw new ParsingException(ParsingException::ERROR_UNEXPECTED_END_OF_INPUT);
     }
+    ParsingException::setParser($this, $firstToken);
     try {
       $parserReturn = $this->parsePart($firstToken);
       if($parserReturn->parsed instanceof Statement) {
@@ -46,6 +48,7 @@ abstract class Parser {
   /**
    * @throws ParsingException
    * @throws ParsingSkippedException
+   * @psalm-return ParserReturn<T>
    */
   protected abstract function parsePart(Token $firstToken): ParserReturn;
 }

@@ -124,6 +124,9 @@ class ArrayType extends ClassType implements IteratableType {
     return null;
   }
 
+  /**
+   * @api
+   */
   public function getKeyType(): Type {
     return $this->keyType;
   }

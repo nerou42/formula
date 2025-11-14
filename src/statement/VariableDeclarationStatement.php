@@ -42,6 +42,9 @@ class VariableDeclarationStatement extends Statement {
   }
 
   public function runStatement(Scope $scope): StatementReturn {
+    if($this->type === null) {
+      throw new \BadMethodCallException("runStatement got called before validateStatement");
+    }
     $value = $this->initializer->run($scope);
     $scope->define($this->final, $this->type, $this->identifier, $value);
     return new StatementReturn(null, false, false);

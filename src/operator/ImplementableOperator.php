@@ -42,7 +42,7 @@ class ImplementableOperator implements FormulaPart {
   public const MAX_ID = self::TYPE_TYPE_CAST;
 
   /**
-   * @var ImplementableOperator::TYPE_*
+   * @psalm-var ImplementableOperator::TYPE_*
    */
   private readonly int $id;
 
@@ -51,7 +51,7 @@ class ImplementableOperator implements FormulaPart {
   private readonly string $identifier;
 
   /**
-   * @param ImplementableOperator::TYPE_*
+   * @psalm-param ImplementableOperator::TYPE_* $id
    */
   public function __construct(int $id) {
     $this->id = $id;
@@ -135,20 +135,5 @@ class ImplementableOperator implements FormulaPart {
 
   public function getID(): int {
     return $this->id;
-  }
-
-  public function getOperatorNode(): array {
-    switch ($this->operatorType) {
-      case OperatorType::PrefixOperator:
-        $operatorType = 'prefix';
-        break;
-      case OperatorType::InfixOperator:
-        $operatorType = 'infix';
-        break;
-        // case OperatorType::PostfixOperator:
-        //   $operatorType = 'postfix';
-        //   break;
-    }
-    return ['operatorType' => $operatorType, 'id' => $this->id, 'identifier' => $this->identifier];
   }
 }

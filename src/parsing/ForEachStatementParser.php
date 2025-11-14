@@ -6,6 +6,7 @@ use TimoLehnertz\formula\statement\ForEachStatement;
 
 /**
  * @author Timo Lehnertz
+ * @template-extends Parser<ForEachStatement>
  */
 class ForEachStatementParser extends Parser {
 
@@ -17,17 +18,11 @@ class ForEachStatementParser extends Parser {
     if($firstToken->id !== Token::KEYWORD_FOR) {
       throw new ParsingSkippedException();
     }
-    if(!$firstToken->hasNext()) {
-      throw new ParsingSkippedException();
-    }
-    $token = $firstToken->next();
+    $token = $firstToken->nextOrParsingSkipped();
     if($token->id !== Token::BRACKETS_OPEN) {
       throw new ParsingSkippedException();
     }
-    if(!$token->hasNext()) {
-      throw new ParsingSkippedException();
-    }
-    $token = $token->next();
+    $token = $token->nextOrParsingSkipped();
     $final = $token->id === Token::KEYWORD_FINAL;
     if($final) {
       $token = $token->next();
@@ -37,10 +32,7 @@ class ForEachStatementParser extends Parser {
     }
     $parsedType = null;
     if($token->id === Token::KEYWORD_VAR) {
-      if(!$token->hasNext()) {
-        throw new ParsingSkippedException();
-      }
-      $token = $token->next();
+      $token = $token->nextOrParsingSkipped();
     } else {
       $parsedType = (new TypeParser(false))->parse($token);
       $token = $parsedType->nextToken;
@@ -52,10 +44,7 @@ class ForEachStatementParser extends Parser {
       throw new ParsingSkippedException();
     }
     $identifier = $token->value;
-    $token = $token->next();
-    if($token === null) {
-      throw new ParsingSkippedException();
-    }
+    $token = $token->nextOrParsingSkipped();
     if($token->id !== Token::COlON) {
       throw new ParsingSkippedException();
     }
@@ -66,7 +55,7 @@ class ForEachStatementParser extends Parser {
       throw new ParsingException(ParsingException::ERROR_UNEXPECTED_END_OF_INPUT);
     }
     if($token->id !== Token::BRACKETS_CLOSED) {
-      throw new ParsingException(ParsingException::ERROR_UNEXPECTED_TOKEN, 'Expected )');
+      throw new ParsingException(ParsingException::ERROR_UNEXPECTED_TOKEN, $token, 'Expected )');
     }
     $token = $token->requireNext();
     $parsedCodeBlock = (new CodeBlockParser(true, false))->parse($token, true);

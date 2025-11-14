@@ -6,6 +6,7 @@ use TimoLehnertz\formula\tokens\Token;
 
 /**
  * @author Timo Lehnertz
+ * @template-extends Parser<ForStatement>
  */
 class ForStatementParser extends Parser {
 
@@ -30,7 +31,7 @@ class ForStatementParser extends Parser {
       $parsedDeclaration = (new VariableDeclarationStatementParser())->parse($token);
       $token = $parsedDeclaration->nextToken;
     } catch(ParsingSkippedException) {
-      if($token->id !== Token::SEMICOLON) {
+      if($token === null || $token->id !== Token::SEMICOLON) {
         throw new ParsingException(ParsingException::ERROR_UNEXPECTED_TOKEN, $firstToken, 'Expected ;');
       }
       $token = $token->next();

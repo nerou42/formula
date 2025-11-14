@@ -2,6 +2,7 @@
 namespace TimoLehnertz\formula\expression;
 
 use PHPUnit\Framework\TestCase;
+use TimoLehnertz\formula\Formula;
 use TimoLehnertz\formula\FormulaBugException;
 use TimoLehnertz\formula\FormulaValidationException;
 use TimoLehnertz\formula\PrettyPrintOptions;

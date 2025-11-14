@@ -22,7 +22,7 @@ class ArrayExpression implements Expression {
    */
   private readonly array $expressions;
 
-  private ArrayType $arrayType;
+  private ?ArrayType $arrayType = null;
 
   public function __construct(array $expressions) {
     $this->expressions = $expressions;
@@ -66,12 +66,16 @@ class ArrayExpression implements Expression {
 
   /**
    * @return array<Expression>
+   * @api
    */
   public function getExpressions(): array {
     return $this->expressions;
   }
 
-  public function getArrayType(): ArrayType {
+  /**
+   * @api
+   */
+  public function getArrayType(): ?ArrayType {
     return $this->arrayType;
   }
 }

@@ -47,6 +47,9 @@ class ReturnStatement extends Statement {
     return 'return '.$this->expression->toString($prettyPrintOptions).';';
   }
 
+  /**
+   * @api
+   */
   public function getExpression(): ?Expression {
     return $this->expression;
   }

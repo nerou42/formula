@@ -54,7 +54,8 @@ class FunctionExpression implements Expression {
     if($this->implicitReturnType) {
       return $functionBody->toString($prettyPrintOptions);
     } else {
-      return $this->returnType->getIdentifier().' '.$functionBody->toString($prettyPrintOptions);
+      // @todo: check if this makes sense when returnType is null
+      return ($this->returnType?->getIdentifier() ?? '').' '.$functionBody->toString($prettyPrintOptions);
     }
   }
 
@@ -66,18 +67,30 @@ class FunctionExpression implements Expression {
     }
   }
 
+  /**
+   * @api
+   */
   public function getReturnType(): ?Type {
     return $this->returnType;
   }
 
+  /**
+   * @api
+   */
   public function getArguments(): InnerFunctionArgumentList {
     return $this->arguments;
   }
 
+  /**
+   * @api
+   */
   public function getCodeBlock(): CodeBlock {
     return $this->codeBlock;
   }
 
+  /**
+   * @api
+   */
   public function isImplicitReturnType(): bool {
     return $this->implicitReturnType;
   }

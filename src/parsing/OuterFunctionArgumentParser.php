@@ -7,6 +7,7 @@ use TimoLehnertz\formula\type\functions\OuterFunctionArgument;
 
 /**
  * @author Timo Lehnertz
+ * @template-extends Parser<OuterFunctionArgument>
  */
 class OuterFunctionArgumentParser extends Parser {
 
@@ -24,7 +25,7 @@ class OuterFunctionArgumentParser extends Parser {
     if($varg) {
       $token = $token->requireNext();
     }
-    if($token !== null && $token->id === Token::IDENTIFIER) {
+    if($token->id === Token::IDENTIFIER) {
       $identifier = $token->value;
       $token = $token->next();
     } else {

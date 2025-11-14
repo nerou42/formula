@@ -36,6 +36,10 @@ class ArgumentListExpression implements Expression, CastableExpression {
       throw new FormulaValidationException('Too many arguments provided');
     }
     for ($i = 0; $i < count($this->expressions); $i++) {
+      /**
+       * Validated above
+       * @psalm-var Type $targetType
+       */
       $targetType = $type->getArgumentType($i);
       $actualType = $this->expressions[$i]->validate($scope);
       $expression = OperatorExpression::castExpression($this->expressions[$i], $actualType, $targetType, $scope);
@@ -81,6 +85,7 @@ class ArgumentListExpression implements Expression, CastableExpression {
   }
 
   /**
+   * @api
    * @return array<Expression>
    */
   public function getExpressions(): array {

@@ -6,16 +6,18 @@ use TimoLehnertz\formula\tokens\Token;
 
 /**
  * @author Timo Lehnertz
+ * @template-covariant T
+ * @template-extends Parser<T>
  */
 class VariantParser extends Parser {
 
   /**
-   * @var Parser[]
+   * @psalm-var Parser<T>[]
    */
   private readonly array $parsers;
 
   /**
-   * @param Parser[] $parsers
+   * @psalm-param Parser<T>[] $parsers
    */
   public function __construct(string $name, array $parsers) {
     parent::__construct($name);

@@ -39,6 +39,9 @@ class IncrementPostfixOperator implements ParsedOperator {
   }
 
   public function buildNode(Scope $scope, ?Expression $leftExpression, ?Expression $rightExpression): Node {
+    if($leftExpression === null || $rightExpression === null) {
+      throw new \InvalidArgumentException('expressions must be given');
+    }
     return new Node('incrementPostfix', [$leftExpression->buildNode($scope)]);
   }
 }

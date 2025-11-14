@@ -27,6 +27,15 @@ class OperatorExpression implements Expression {
   public ?Expression $rightExpression;
 
   public function __construct(?Expression $leftExpression, ImplementableOperator $operator, ?Expression $rightExpression) {
+    if($operator->getOperatorType() === OperatorType::InfixOperator && ($leftExpression === null || $rightExpression === null)) {
+      throw new \InvalidArgumentException('missing Expressions');
+    }
+    if($operator->getOperatorType() === OperatorType::PrefixOperator && $rightExpression === null) {
+      throw new \InvalidArgumentException('missing Expressions');
+    }
+    if($operator->getOperatorType() === OperatorType::PostfixOperator && $leftExpression === null) {
+      throw new \InvalidArgumentException('missing Expressions');
+    }
     $this->leftExpression = $leftExpression;
     $this->operator = $operator;
     $this->rightExpression = $rightExpression;
@@ -35,19 +44,27 @@ class OperatorExpression implements Expression {
   public function validate(Scope $scope): Type {
     $leftType = $this->leftExpression?->validate($scope) ?? null;
     $rightType = $this->rightExpression?->validate($scope) ?? null;
-    $returnType = null;
     switch ($this->operator->getOperatorType()) {
       case OperatorType::PrefixOperator:
+        /** @var Type $rightType */
         $returnType = $rightType->getOperatorResultType($this->operator, null);
         break;
       case OperatorType::InfixOperator:
+        /** @var Type $leftType */
         $operands = $leftType->getCompatibleOperands($this->operator);
         if (count($operands) === 0) {
           throw new FormulaValidationException($leftType->toString(PrettyPrintOptions::buildDefault()) . ' does not implement operator ' . $this->operator->toString(PrettyPrintOptions::buildDefault()));
         }
-        $this->rightExpression = OperatorExpression::castExpression($this->rightExpression, $rightType, CompoundType::buildFromTypes($operands), $scope);
+        /** @var Expression $rightExpression */
+        $rightExpression = $this->rightExpression;
+        /** @var Type $rightType */
+        $this->rightExpression = OperatorExpression::castExpression($rightExpression, $rightType, CompoundType::buildFromTypes($operands), $scope);
         $rightType = $this->rightExpression->validate($scope);
         $returnType = $leftType->getOperatorResultType($this->operator, $rightType);
+        break;
+      case OperatorType::PostfixOperator:
+        /** @var Type $leftType */
+        $returnType = $leftType->getOperatorResultType($this->operator, null);
         break;
     }
     if ($returnType === null) {
@@ -59,8 +76,16 @@ class OperatorExpression implements Expression {
   public function run(Scope $scope): Value {
     switch ($this->operator->getOperatorType()) {
       case OperatorType::PrefixOperator:
+        /**
+         * Validated in constructor
+         * @psalm-suppress PossiblyNullReference
+         */
         return $this->rightExpression->run($scope)->operate($this->operator, null);
       case OperatorType::InfixOperator:
+        /**
+         * Validated in constructor
+         * @psalm-suppress PossiblyNullReference
+         */
         return $this->leftExpression->run($scope)->operate($this->operator, $this->rightExpression->run($scope));
       default:
         throw new FormulaBugException('Invalid operatorType');
@@ -110,14 +135,23 @@ class OperatorExpression implements Expression {
     return new Node('OperatorExpression', $connected, ['operator' => $this->operator->getID()]);
   }
 
+  /**
+   * @api
+   */
   public function getLeftExpression(): ?Expression {
     return $this->leftExpression;
   }
 
+  /**
+   * @api
+   */
   public function getOperator(): ImplementableOperator {
     return $this->operator;
   }
 
+  /**
+   * @api
+   */
   public function getRightExpression(): ?Expression {
     return $this->rightExpression;
   }

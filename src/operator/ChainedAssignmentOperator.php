@@ -45,6 +45,9 @@ class ChainedAssignmentOperator implements ParsedOperator {
   }
 
   public function buildNode(Scope $scope, ?Expression $leftExpression, ?Expression $rightExpression): Node {
+    if($leftExpression === null || $rightExpression === null) {
+      throw new \InvalidArgumentException('expressions must be given');
+    }
     return new Node($this->chainedOperator->toString(PrettyPrintOptions::buildDefault()).'=', [$leftExpression->buildNode($scope), $rightExpression->buildNode($scope)]);
   }
 }

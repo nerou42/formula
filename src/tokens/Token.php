@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace TimoLehnertz\formula\tokens;
 
 use TimoLehnertz\formula\parsing\ParsingException;
+use TimoLehnertz\formula\parsing\ParsingSkippedException;
 
 /**
  * @author Timo Lehnertz
@@ -17,6 +18,7 @@ class Token {
 
   public readonly int $position;
 
+  /** @psalm-suppress PossiblyUnusedProperty */
   public readonly string $source;
 
   private ?Token $prev = null;
@@ -77,6 +79,14 @@ class Token {
     return null;
   }
 
+  public function nextOrParsingSkipped(bool $includeComments = false): Token {
+    $next = $this->next($includeComments);
+    if($next === null) {
+      throw new ParsingSkippedException();
+    }
+    return $next;
+  }
+
   public function requireNext(bool $includeComments = false): Token {
     $next = $this->next($includeComments);
     if ($next === null) {
@@ -86,6 +96,9 @@ class Token {
     }
   }
 
+  /**
+   * @api
+   */
   public function last(bool $includeComments = false): Token {
     $next = $this->next($includeComments);
     if ($next === null) {

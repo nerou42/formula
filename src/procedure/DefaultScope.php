@@ -53,6 +53,7 @@ class DefaultScope extends Scope {
         }
         return CompoundType::buildFromTypes([new NullType(), $type->getElementsType()]);
       }
+      return null;
     }));
     $this->definePHP(true, "lastOrNull", self::lastOrNullFunc(...), null, null, new SpecificReturnType('FORMULA_FIRST_OR_NULL', function (OuterFunctionArgumentListType $args): ?Type {
       $type = $args->getArgumentType(0);
@@ -62,6 +63,7 @@ class DefaultScope extends Scope {
         }
         return CompoundType::buildFromTypes([new NullType(), $type->getElementsType()]);
       }
+      return null;
     }));
     $this->definePHP(true, "assertTrue", self::assertTrueFunc(...));
     $this->definePHP(true, "assertFalse", self::assertFalseFunc(...));
@@ -211,19 +213,19 @@ class DefaultScope extends Scope {
 
   public static function sumFunc(float|int|array ...$values): float {
     $arr = DefaultScope::mergeArraysRecursive($values);
-    $res = 0;
+    $res = 0.0;
     foreach ($arr as $value) {
       if (!is_numeric($value)) {
         throw new FormulaRuntimeException('Only numeric values or vectors are allowed for sum');
       }
-      $res += $value;
+      $res += (float) $value;
     }
     return $res;
   }
 
   public static function avgFunc(float|int|array ...$values): float {
     $sum = self::sumFunc($values);
-    return $sum / self::sizeofFunc($values);
+    return $sum / (float) self::sizeofFunc($values);
   }
 
   public static function assertTrueFunc(bool $condition): void {
@@ -238,9 +240,9 @@ class DefaultScope extends Scope {
     }
   }
 
-  public static function assertFalseFunc(bool $condition, string $message = ''): void {
+  public static function assertFalseFunc(bool $condition, ?string $message = null): void {
     if ($condition === true) {
-      throw new FormulaRuntimeException('failed asserting that true is false');
+      throw new FormulaRuntimeException('failed asserting that true is false'.($message !== null ? ('. Message: '.$message) : ''));
     }
   }
 }

@@ -4,24 +4,24 @@ namespace TimoLehnertz\formula\parsing;
 
 use TimoLehnertz\formula\FormulaPart;
 use TimoLehnertz\formula\tokens\Token;
-use TimoLehnertz\formula\type\Type;
 
 /**
  * @author Timo Lehnertz
+ * @template-covariant T
  */
 class ParserReturn {
 
   /**
-   * @var FormulaPart|array<FormulaPart>
+   * @var T
    */
-  public readonly FormulaPart|array $parsed;
+  public readonly mixed $parsed;
 
   public readonly ?Token $nextToken;
 
   /**
-   * @param FormulaPart|array<FormulaPart>|Type $parsed
+   * @param T $parsed
    */
-  public function __construct(FormulaPart|array $parsed, ?Token $nextToken) {
+  public function __construct(mixed $parsed, ?Token $nextToken) {
     $this->parsed = $parsed;
     $this->nextToken = $nextToken;
   }

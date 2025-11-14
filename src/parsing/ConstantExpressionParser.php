@@ -23,6 +23,7 @@ use TimoLehnertz\formula\type\VoidValue;
 
 /**
  * @author Timo Lehnertz
+ * @template-extends Parser<ConstantExpression>
  */
 class ConstantExpressionParser extends Parser {
 

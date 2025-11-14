@@ -39,6 +39,10 @@ class ForStatement extends Statement {
 
   public function runStatement(Scope $scope): StatementReturn {
     $scope = $scope->buildChild();
+    /**
+     * @psalm-suppress TypeDoesNotContainNull
+     * @psalm-suppress RedundantCondition
+     */
     for ($this->declarationStatement?->run($scope); $this->condition?->run($scope)->isTruthy() ?? true; $this->incrementExpression?->run($scope)) { 
       $return = $this->body->run($scope);
       if($return->returnValue !== null) {

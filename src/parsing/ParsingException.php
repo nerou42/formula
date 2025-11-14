@@ -30,17 +30,19 @@ class ParsingException extends FormulaException {
 
   public const ERROR_VARG_NOT_LAST = 12;
 
-  public readonly Parser $parser;
+  public readonly ?Parser $parser;
 
+  /** @psalm-suppress PossiblyUnusedProperty */
   public readonly int $parsingErrorCode;
 
-  public readonly Token $token;
+  public readonly ?Token $token;
 
+  /** @psalm-suppress PossiblyUnusedProperty */
   public readonly ?string $additionalInfo;
 
-  private static Parser $currentParser;
+  private static ?Parser $currentParser = null;
 
-  private static Token $currentToken;
+  private static ?Token $currentToken = null;
 
   /**
    * @param ParsingException::ERROR_* extends int $parsingErrorCode
@@ -50,7 +52,12 @@ class ParsingException extends FormulaException {
     $this->token = $token ?? ParsingException::$currentToken;
     $this->additionalInfo = $additionalInfo;
     $this->parser = ParsingException::$currentParser;
-    $message = 'Syntax error in ' . $this->parser->name . ': ' . ($this->token->line + 1) . ':' . ($this->token->position + 1) . ' ' . $this->token->value . ' . Message: ' . static::codeToMessage($parsingErrorCode);
+
+    $parserName = $this->parser?->name ?? 'Unknown';
+    $line = $this->token !== null ? $this->token->line + 1 : 'unknown';
+    $position = $this->token !== null ? $this->token->position + 1 : 'unknown';
+
+    $message = 'Syntax error in ' . $parserName . ': ' . $line . ':' . $position . ' ' . ($this->token?->value ?? '-') . ' . Message: ' . static::codeToMessage($parsingErrorCode);
     if ($additionalInfo !== null) {
       $message .= '. ' . $additionalInfo;
     }

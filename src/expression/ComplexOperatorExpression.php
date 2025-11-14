@@ -43,17 +43,29 @@ class ComplexOperatorExpression extends OperatorExpression {
   }
 
   public function buildNode(Scope $scope): Node {
+    if($this->outerOperator === null) {
+      throw new \BadMethodCallException('Outer operator is required');
+    }
     return $this->outerOperator->buildNode($scope, $this->outerLeftExpression, $this->outerRightExpression);
   }
 
+  /**
+   * @api
+   */
   public function getOuterLeftExpression(): ?Expression {
     return $this->outerLeftExpression;
   }
 
+  /**
+   * @api
+   */
   public function getOuterOperator(): ?ParsedOperator {
     return $this->outerOperator;
   }
 
+  /**
+   * @api
+   */
   public function getOuterRightExpression(): ?Expression {
     return $this->outerRightExpression;
   }

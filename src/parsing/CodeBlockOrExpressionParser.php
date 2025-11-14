@@ -7,6 +7,7 @@ use TimoLehnertz\formula\statement\CodeBlockOrExpression;
 
 /**
  * @author Timo Lehnertz
+ * @template-extends Parser<CodeBlockOrExpression>
  */
 class CodeBlockOrExpressionParser extends Parser {
 

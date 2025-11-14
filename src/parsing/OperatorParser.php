@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace TimoLehnertz\formula\parsing;
 
+use TimoLehnertz\formula\FormulaPart;
 use TimoLehnertz\formula\operator\ChainedAssignmentOperator;
 use TimoLehnertz\formula\operator\DecrementPostfixOperator;
 use TimoLehnertz\formula\operator\DecrementPrefixOperator;
@@ -13,10 +14,12 @@ use TimoLehnertz\formula\operator\IncrementPrefixOperator;
 use TimoLehnertz\formula\operator\LessEqualsOperator;
 use TimoLehnertz\formula\operator\NotEqualsOperator;
 use TimoLehnertz\formula\operator\OperatorType;
+use TimoLehnertz\formula\operator\ParsedOperator;
 use TimoLehnertz\formula\tokens\Token;
 
 /**
  * @author Timo Lehnertz
+ * @template-extends Parser<ImplementableParsedOperator|ParsedOperator>
  */
 class OperatorParser extends Parser {
 
@@ -89,7 +92,8 @@ class OperatorParser extends Parser {
          * If the next token is an identifier this must be a prefix as in a++
          * It doesn't work the other way around as a()++ could also be a legal postfix
          */
-        $isPrefix = $firstToken->hasNext() && $firstToken->next()->id === Token::IDENTIFIER;
+        $next = $firstToken->next();
+        $isPrefix = $next !== null && $next->id === Token::IDENTIFIER;
         if ($firstToken->id === Token::INCREMENT) {
           return new ParserReturn($isPrefix ? new IncrementPrefixOperator() : new IncrementPostfixOperator(), $firstToken->next());
         } else {

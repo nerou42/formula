@@ -6,6 +6,8 @@ use TimoLehnertz\formula\tokens\Token;
 
 /**
  * @author Timo Lehnertz
+ * @template-covariant T
+ * @template-extends Parser<list<T>>
  */
 class EnumeratedParser extends Parser {
 
@@ -21,6 +23,9 @@ class EnumeratedParser extends Parser {
 
   private readonly bool $allowLastDelimiter;
 
+  /**
+   * @psalm-param Parser<T> $elementParser
+   */
   public function __construct(string $name, Parser $elementParser, int $firstToken, int $delimiterToken, int $lastToken, bool $allowEmpty, bool $allowLastDelimiter) {
     parent::__construct($name);
     $this->elementParser = $elementParser;
@@ -31,6 +36,9 @@ class EnumeratedParser extends Parser {
     $this->allowLastDelimiter = $allowLastDelimiter;
   }
 
+  /**
+   * @psalm-return ParserReturn<list<T>>
+   */
   protected function parsePart(Token $firstToken): ParserReturn {
     if($firstToken->id !== $this->firstToken) {
       throw new ParsingSkippedException();

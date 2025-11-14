@@ -11,6 +11,7 @@ use TimoLehnertz\formula\PrettyPrintOptions;
 
 /**
  * @author Timo Lehnertz
+ * @template-extends Parser<Expression>
  */
 class ExpressionParser extends Parser {
 
@@ -50,6 +51,7 @@ class ExpressionParser extends Parser {
       }
     }
     $expressionsAndOperators = [];
+    /** @psalm-var VariantParser<Expression|ParsedOperator> */
     $variantParser = new VariantParser($this->name, [new OperatorParser(), new FunctionParser(false), new ConstantExpressionParser(), new ArrayParser(), new IdentifierParser(), new ExpressionParser(true, false)]);
     while ($token !== null) {
       // Ternary
@@ -91,6 +93,9 @@ class ExpressionParser extends Parser {
     return new ParserReturn($result, $token);
   }
 
+  /**
+   * @psalm-param list<Expression|ParsedOperator> $expressionsAndOperators
+   */
   private function transform(array $expressionsAndOperators, ?Token $nextToken): Expression {
     if (count($expressionsAndOperators) === 0) {
       throw new ParsingSkippedException();
@@ -114,9 +119,11 @@ class ExpressionParser extends Parser {
       $leftExpression = null;
       $rightExpression = null;
       if ($index > 0 && $expressionsAndOperators[$index - 1] instanceof Expression) {
+        /** @psalm-var Expression */
         $leftExpression = $expressionsAndOperators[$index - 1];
       }
       if ($index + 1 < count($expressionsAndOperators) && $expressionsAndOperators[$index + 1] instanceof Expression) {
+        /** @psalm-var Expression */
         $rightExpression = $expressionsAndOperators[$index + 1];
       }
       // check if set correctly
@@ -152,6 +159,10 @@ class ExpressionParser extends Parser {
       // var_dump($expressionsAndOperators);
       throw new ParsingException(ParsingException::ERROR_INVALID_OPERATOR_USE, $nextToken);
     }
-    return $expressionsAndOperators[0];
+    /**
+     * @psalm-var Expression
+     */
+    $lastRemainingExpression = $expressionsAndOperators[0];
+    return $lastRemainingExpression;
   }
 }

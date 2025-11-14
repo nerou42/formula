@@ -8,6 +8,7 @@ use TimoLehnertz\formula\tokens\Token;
 
 /**
  * @author Timo Lehnertz
+ * @template-extends Parser<IdentifierExpression>
  */
 class IdentifierParser extends Parser {
 
@@ -19,7 +20,8 @@ class IdentifierParser extends Parser {
     if($firstToken->id !== Token::IDENTIFIER) {
       throw new ParsingSkippedException();
     }
-    if($firstToken->hasPrev() && $firstToken->prev()->id === Token::DOT) {
+    $prev = $firstToken->prev();
+    if($prev !== null && $prev->id === Token::DOT) {
       $parsed = new MemberAccsessExpression($firstToken->value);
     } else {
       $parsed = new IdentifierExpression($firstToken->value);

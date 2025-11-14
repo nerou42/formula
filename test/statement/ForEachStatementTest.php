@@ -4,7 +4,6 @@ namespace test\statement;
 use PHPUnit\Framework\TestCase;
 use TimoLehnertz\formula\Formula;
 use TimoLehnertz\formula\FormulaValidationException;
-use TimoLehnertz\formula\type\IntegerType;
 
 class ForEachStatementTest extends TestCase {
 

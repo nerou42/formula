@@ -15,20 +15,19 @@ use TimoLehnertz\formula\operator\OperatorType;
 class ArrayValue extends ClassInstanceValue implements IteratableValue {
 
   /**
-   * @var array<array-key, Value>
+   * @var array<array-key, \TimoLehnertz\formula\type\Value>
    */
   private array $value;
 
   private readonly FieldValue $lengthField;
 
   /**
-   * @param array<array-key, Value>
+   * @psalm-param array<array-key, \TimoLehnertz\formula\type\Value> $value
    */
   public function __construct(array $value) {
     $this->lengthField = new FieldValue(new IntegerValue(count($value)));
     parent::__construct(['length' => $this->lengthField]);
     $this->value = $value;
-    /** @var Value $value */
     foreach($this->value as $key => $value) {
       $value->setContainer(new ArrayPointerValue($this, $key));
     }

@@ -9,6 +9,7 @@ use TimoLehnertz\formula\type\functions\OuterFunctionArgumentListType;
 
 /**
  * @author Timo Lehnertz
+ * @template-extends Parser<FunctionType>
  */
 class FunctionTypeParser extends Parser {
 
@@ -20,9 +21,9 @@ class FunctionTypeParser extends Parser {
     if($firstToken->id !== Token::KEYWORD_FUNCTION) {
       throw new ParsingSkippedException();
     }
-    $parsedParamenets = (new EnumeratedParser('function args', new OuterFunctionArgumentParser(), Token::BRACKETS_OPEN, Token::COMMA, Token::BRACKETS_CLOSED, false, true))->parse($firstToken->next());
-    $arguments = $parsedParamenets->parsed;
-    $token = $parsedParamenets->nextToken;
+    $parsedParameters = (new EnumeratedParser('function args', new OuterFunctionArgumentParser(), Token::BRACKETS_OPEN, Token::COMMA, Token::BRACKETS_CLOSED, false, true))->parse($firstToken->next());
+    $arguments = $parsedParameters->parsed;
+    $token = $parsedParameters->nextToken;
     if($token === null) {
       throw new ParsingException(ParsingException::ERROR_UNEXPECTED_END_OF_INPUT);
     }
@@ -32,7 +33,6 @@ class FunctionTypeParser extends Parser {
     $token = $token->requireNext();
     $parsedReturnType = (new TypeParser(false))->parse($token);
     $isVArgs = false;
-    /** @var OuterFunctionArgument $argument */
     foreach($arguments as $key => $argument) {
       if($argument->varg) {
         if($isVArgs) {
@@ -42,8 +42,8 @@ class FunctionTypeParser extends Parser {
         $isVArgs = true;
       }
     }
-    $arguments = new OuterFunctionArgumentListType($arguments, $isVArgs);
-    $functionType = new FunctionType($arguments, $parsedReturnType->parsed);
+    $argumentsListType = new OuterFunctionArgumentListType($arguments, $isVArgs);
+    $functionType = new FunctionType($argumentsListType, $parsedReturnType->parsed);
     return new ParserReturn($functionType, $parsedReturnType->nextToken);
   }
 }

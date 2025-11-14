@@ -21,7 +21,7 @@ class DecrementPrefixOperator implements ParsedOperator {
 
   public function transform(?Expression $leftExpression, ?Expression $rightExpression): Expression {
     $subtractionOperator = new ImplementableOperator(ImplementableOperator::TYPE_SUBTRACTION);
-    $subtractionExpression = new OperatorExpression($rightExpression, $subtractionOperator, new ConstantExpression(new IntegerType(true), new IntegerValue(1), '1'));
+    $subtractionExpression = new OperatorExpression($rightExpression, $subtractionOperator, new ConstantExpression(new IntegerType(), new IntegerValue(1), '1'));
     $assignmentOperator = new ImplementableOperator(ImplementableOperator::TYPE_DIRECT_ASSIGNMENT);
     return new ComplexOperatorExpression($rightExpression, $assignmentOperator, $subtractionExpression, $leftExpression, $this, $rightExpression);
   }
@@ -39,6 +39,9 @@ class DecrementPrefixOperator implements ParsedOperator {
   }
 
   public function buildNode(Scope $scope, ?Expression $leftExpression, ?Expression $rightExpression): Node {
+    if($rightExpression === null) {
+      throw new \InvalidArgumentException('left expression must be given');
+    }
     return new Node('decrementPrefix', [$rightExpression->buildNode($scope)]);
   }
 }

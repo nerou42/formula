@@ -43,6 +43,9 @@ class FunctionStatement extends Statement {
   }
 
   public function runStatement(Scope $scope): StatementReturn {
+    if($this->functionType === null) {
+      throw new \BadMethodCallException("runStatement got called before validateStatement");
+    }
     $functionBody = new FormulaFunctionBody($this->arguments, $this->codeBlock, $scope);
     $functionValue = new FunctionValue($functionBody);
     $scope->define(true, $this->functionType, $this->identifier, $functionValue);

@@ -18,6 +18,9 @@ class FieldType {
     $this->type = $type->setAssignable(!$this->final);
   }
 
+  /**
+   * @api
+   */
   public function equals(FieldType $other): bool {
     return $this->final === $other->final && $this->type->equals($other->type);
   }

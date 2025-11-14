@@ -8,6 +8,7 @@ use TimoLehnertz\formula\statement\ContinueStatement;
 
 /**
  * @author Timo Lehnertz
+ * @template-extends Parser<ContinueStatement>
  */
 class ContinueStatementParser extends Parser {
 

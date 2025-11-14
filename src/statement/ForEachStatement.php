@@ -52,6 +52,9 @@ class ForEachStatement extends Statement {
   }
 
   public function runStatement(Scope $scope): StatementReturn {
+    if($this->elementType === null) {
+      throw new \BadMethodCallException('runStatement got called before validateStatement');
+    }
     /** @var IteratableValue $iterator */
     $iterator = $this->getterExpression->run($scope);
     /** @var Value $value */

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace TimoLehnertz\formula\parsing;
@@ -13,8 +12,10 @@ use TimoLehnertz\formula\type\functions\InnerVargFunctionArgument;
 use TimoLehnertz\formula\type\VoidType;
 
 /**
- * @author Timo Lehnertz
  * <Function value> ::= <Type>? <FunctionArguments> "->" <Expression> | ("{" <CodeBlock> "}")
+ * 
+ * @author Timo Lehnertz
+ * @template-extends Parser<FunctionStatement|FunctionExpression>
  */
 class FunctionParser extends Parser {
 
@@ -68,7 +69,7 @@ class FunctionParser extends Parser {
       $arg = $parsedArguments->parsed[$i];
       if ($arg instanceof InnerFunctionArgument) {
         $normalArgs[] = $arg;
-      } else if ($arg instanceof InnerVargFunctionArgument) {
+      } else {
         $vArg = $arg;
         if ($i !== count($parsedArguments->parsed) - 1) {
           throw new ParsingException(ParsingException::ERROR_VARG_NOT_LAST);
@@ -89,6 +90,12 @@ class FunctionParser extends Parser {
     }
     $innerArgs = new InnerFunctionArgumentList($normalArgs, $vArg);
     if ($this->parseStatement) {
+      /**
+       * $identifier and $parsedReturnType cannot be null here because parseStatement is true.
+       * @psalm-suppress PossiblyUndefinedVariable
+       * @psalm-suppress PossiblyNullPropertyFetch
+       * @psalm-suppress PossiblyNullArgument
+       */
       $parsed = new FunctionStatement($parsedReturnType->parsed, $identifier, $innerArgs, $parsedCodeBlock->parsed);
     } else {
       $parsed = new FunctionExpression($parsedReturnType?->parsed ?? null, $innerArgs, $parsedCodeBlock->parsed);

@@ -31,6 +31,8 @@ class CodeBlockOrExpression extends Statement {
         $this->content = OperatorExpression::castExpression($this->content, $implicitType, $allowedReturnType, $scope);
       }
       return new StatementReturnType($this->content->validate($scope), Frequency::ALWAYS, Frequency::ALWAYS);
+    } else {
+      throw new \UnexpectedValueException('Unexpected type for content');
     }
   }
 
@@ -39,6 +41,8 @@ class CodeBlockOrExpression extends Statement {
       return $this->content->run($scope);
     } elseif($this->content instanceof Expression) {
       return new StatementReturn($this->content->run($scope), false, false);
+    } else {
+      throw new \UnexpectedValueException('Unexpected type for content');
     }
   }
 
@@ -54,6 +58,9 @@ class CodeBlockOrExpression extends Statement {
     }
   }
 
+  /**
+   * @api
+   */
   public function getContent(): CodeBlock|Expression {
     return $this->content;
   }

@@ -8,11 +8,12 @@ use TimoLehnertz\formula\tokens\Token;
 
 /**
  * @author Timo Lehnertz
+ * @template-extends Parser<CallOperator>
  */
-class CallOperatorParser extends EnumeratedParser {
+class CallOperatorParser extends Parser {
 
   public function __construct() {
-    parent::__construct('call operator', new ExpressionParser(), Token::BRACKETS_OPEN, Token::COMMA, Token::BRACKETS_CLOSED, false, true);
+    parent::__construct('call operator');
   }
 
   protected function parsePart(Token $firstToken): ParserReturn {
@@ -20,7 +21,8 @@ class CallOperatorParser extends EnumeratedParser {
     if($prev === null) {
       throw new ParsingSkippedException();
     }
-    $result = parent::parsePart($firstToken);
+    $enumeratedParser = new EnumeratedParser('call operator', new ExpressionParser(), Token::BRACKETS_OPEN, Token::COMMA, Token::BRACKETS_CLOSED, false, true);
+    $result = $enumeratedParser->parsePart($firstToken);
     return new ParserReturn(new CallOperator(new ArgumentListExpression($result->parsed)), $result->nextToken);
   }
 }
