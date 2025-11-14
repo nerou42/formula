@@ -37,6 +37,9 @@ class Token {
     }
   }
 
+  /**
+   * @api
+   */
   public function hasPrev(bool $includeComments = false): bool {
     return $this->prev($includeComments) !== null;
   }
