@@ -51,7 +51,10 @@ class ArrayValue extends ClassInstanceValue implements IteratableValue {
       throw new FormulaBugException('Expected an operator');
     }
     switch($operator->getID()) {
-      // intentionally no break
+      case ImplementableOperator::TYPE_TYPE_CAST:
+        if(($other instanceof TypeValue) && ($other->getValue() instanceof ArrayType)) {
+          $other = new TypeValue($other->getValue()->getElementsType());
+        }
       case ImplementableOperator::TYPE_ADDITION:
       case ImplementableOperator::TYPE_SUBTRACTION:
       case ImplementableOperator::TYPE_MULTIPLICATION:
@@ -90,10 +93,6 @@ class ArrayValue extends ClassInstanceValue implements IteratableValue {
         }
       case ImplementableOperator::TYPE_MEMBER_ACCESS:
         return parent::valueOperate($operator, $other);
-      case ImplementableOperator::TYPE_TYPE_CAST:
-        if(($other instanceof TypeValue) && ($other->getValue() instanceof ArrayType)) {
-          $other = new TypeValue($other->getValue()->getElementsType());
-        }
       }
     throw new FormulaBugException('Invalid operation');
   }
