@@ -65,7 +65,7 @@ class FormulaFunctionBody implements FormulaPart, FunctionBody {
   }
 
   public function toString(PrettyPrintOptions $prettyPrintOptions): string {
-    return $this->arguments->tostring($prettyPrintOptions).' '.$this->codeBlock->toString($prettyPrintOptions);
+    return $this->arguments->toString($prettyPrintOptions).' '.$this->codeBlock->toString($prettyPrintOptions);
   }
 
   public function getArgs(): OuterFunctionArgumentListType {

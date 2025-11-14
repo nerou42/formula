@@ -89,7 +89,7 @@ class InnerFunctionArgumentList {
     return new OuterFunctionArgumentListType($args, $this->varg !== null);
   }
 
-  public function tostring(PrettyPrintOptions $prettyPrintOptions): string {
+  public function toString(PrettyPrintOptions $prettyPrintOptions): string {
     $str = '(';
     $del = '';
     foreach($this->arguments as $argument) {
