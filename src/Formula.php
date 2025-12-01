@@ -42,7 +42,7 @@ class Formula {
     }
     $parsedContent = (new CodeBlockOrExpressionParser())->parse($firstToken, true, true);
     $this->content = $parsedContent->parsed;
-    $this->returnType = $this->content->validate($this->buildScope(), $expectedReturnType)->returnType ?? new VoidType();
+    $this->returnType = $this->content->validate($this->parentScope, $expectedReturnType)->returnType ?? new VoidType();
   }
 
   /**
@@ -57,8 +57,8 @@ class Formula {
    * @throws NodesNotSupportedException
    */
   public function getNodeTree(): array {
-    $node = $this->content->buildNode($this->buildScope());
-    return (new NodeTree($node->toArray(), $this->buildScope()->toNodeTreeScope()))->toArray();
+    $node = $this->content->buildNode($this->parentScope);
+    return (new NodeTree($node->toArray(), $this->parentScope->toNodeTreeScope()))->toArray();
   }
 
   public function getReturnType(): Type {
@@ -69,13 +69,7 @@ class Formula {
    * Calculates and returns the result of this formula
    */
   public function calculate(): Value {
-    return $this->content->run($this->buildScope())->returnValue ?? new VoidValue();
-  }
-
-  private function buildScope(): Scope {
-    $scope = new Scope();
-    $scope->setParent($this->parentScope);
-    return $scope;
+    return $this->content->run($this->parentScope)->returnValue ?? new VoidValue();
   }
 
   public function prettyprintFormula(?PrettyPrintOptions $prettyprintOptions = null): string {
