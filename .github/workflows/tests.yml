@@ -33,14 +33,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-        
+      
+      - uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "${{ matrix.php.version }}"
       # Install dependencies and handle caching in one go.
       - name: Install Composer dependencies
         uses: ramsey/composer-install@v3
         with:
           # Bust the cache at least once a month - output format: YYYY-MM.
           custom-cache-suffix: $(date -u "+%Y-%m")
-          php-version: "${{ matrix.php.version }}"
 
       - name: Unit tests
         uses: php-actions/phpunit@v4
