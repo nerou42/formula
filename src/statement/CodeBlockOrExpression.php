@@ -37,10 +37,10 @@ class CodeBlockOrExpression extends Statement {
   }
 
   public function runStatement(Scope $scope): StatementReturn {
-    if($this->content instanceof CodeBlock) {
-      return $this->content->run($scope);
-    } elseif($this->content instanceof Expression) {
+    if($this->content instanceof Expression) {
       return new StatementReturn($this->content->run($scope), false, false);
+    } elseif($this->content instanceof CodeBlock) {
+      return $this->content->run($scope);
     } else {
       throw new \UnexpectedValueException('Unexpected type for content');
     }
