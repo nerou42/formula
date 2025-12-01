@@ -66,7 +66,7 @@ class Formula {
   }
 
   /**
-   * Calculates and returnes the result of this formula
+   * Calculates and returns the result of this formula
    */
   public function calculate(): Value {
     return $this->content->run($this->buildScope())->returnValue ?? new VoidValue();
